@@ -1,0 +1,3693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>UBOs · Clara Request</title>
+<meta name="viewport" content="width=1280" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" />
+<style>
+  /* ============================================================
+     Tokens — Clara Design System v3.0
+     ============================================================ */
+  :root {
+    /* Backgrounds */
+    --bg-default:        #FFFFFF;
+    --bg-app:            #FBFCFD;
+    --bg-highlight:      #F7F9FA;
+    --bg-disabled:       #F3F5F6;
+    --bg-active:         #EBEEF4;
+    --bg-advice:         #EFE7FE;
+    --bg-warning:        #FFF9E3;
+
+    /* Content */
+    --fg-high:           #1F2223;
+    --fg-medium:         #404344;
+    --fg-low:            #737677;
+    --fg-disabled:       #9C9FA0;
+    --fg-critical:       #B00020;
+    --fg-warning:        #B26B00;
+    --fg-advice:         #663DB0;
+
+    /* Borders */
+    --border-default:    #DFE1E2;
+    --border-interactive:#BBBEBF;
+    --border-disabled:   #EDEFF0;
+
+    /* Primary */
+    --primary-default:   #335894;
+    --primary-hover:     #294676;
+    --primary-active:    #1F3559;
+    --primary-outline:   #859BBF;
+
+    /* Sidenav (light variant used in onboarding) */
+    --sidenav-dark:      #1F304B;
+
+    /* Complementary */
+    --comp-link:         #1959D2;
+
+    /* Status */
+    --success-default:   #356D29;
+    --success-subtle:    #E8F6E5;
+
+    /* Type & spacing */
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 999px;
+
+    /* Layout */
+    --topbar-h: 56px;
+    --sidebar-w: 184px;
+    --footer-h: 36px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-app);
+    color: var(--fg-high);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'ss01';
+  }
+  button { font-family: inherit; }
+
+  /* ============================================================
+     App shell
+     ============================================================ */
+  .app {
+    height: 100vh;
+    min-height: 640px;
+    display: grid;
+    grid-template-rows: var(--topbar-h) 1fr var(--footer-h);
+    grid-template-columns: var(--sidebar-w) 1fr;
+    grid-template-areas:
+      "topbar  topbar"
+      "sidebar main"
+      "footer  footer";
+    background: var(--bg-app);
+  }
+
+  /* ===== Top bar ============================================== */
+  .topbar {
+    grid-area: topbar;
+    background: var(--bg-default);
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    padding: 0 24px 0 20px;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: calc(var(--sidebar-w) - 20px);
+    flex-shrink: 0;
+    color: var(--fg-high);
+  }
+  .brand .logo {
+    width: 22px;
+    height: 22px;
+    color: var(--fg-high);
+  }
+  .brand .name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.011em;
+    line-height: 1;
+  }
+
+  .company-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 4px 4px;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: background 200ms var(--ease-standard, cubic-bezier(.4,0,.2,1));
+  }
+  .company-pill:focus { outline: none; }
+  .company-pill:focus-visible {
+    outline: 2px solid var(--primary-outline);
+    outline-offset: 2px;
+  }
+  .company-pill:hover { background: var(--bg-highlight); }
+  .company-pill .ci {
+    width: 28px; height: 28px;
+    background: var(--bg-highlight);
+    color: var(--fg-medium);
+    border-radius: var(--radius-pill);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .company-pill .cn {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--fg-high);
+    letter-spacing: -0.011em;
+  }
+  .company-pill svg { color: var(--fg-low); }
+
+  .topbar .right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .top-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--fg-medium);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.006em;
+    transition: background 200ms;
+  }
+  .top-action:hover { background: var(--bg-disabled); }
+  .top-action svg { color: var(--fg-medium); }
+  .top-action .chev { color: var(--fg-low); }
+
+  /* ===== Drop-down proposal: progress bar + actions caption == */
+  .progress-hint {
+    display: none;
+    margin-left: auto;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-low);
+    font-weight: 500;
+  }
+  .actions-caption {
+    display: none;
+    margin: 16px 0 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-low);
+    text-align: center;
+    grid-column: 1 / -1;
+  }
+  .progress-label-wrap { display: none; }
+  .progress-value-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 0;
+  }
+  body[data-step-active="2"] .progress-hint { display: inline-flex; }
+  .actions-caption { display: block; }
+  /* Hide per-UBO "Attach documents" trigger */
+  .doc-card .doc-attach { display: none; }
+  /* Turn doc-card into an accordion */
+  .doc-card .doc-body { display: none; }
+  .doc-card .doc-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .doc-chevron {
+    display: inline-flex;
+    margin-left: auto;
+    color: var(--fg-medium);
+    transition: transform 200ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .doc-card.is-open .doc-chevron { transform: rotate(180deg); }
+  .doc-card.is-open .doc-accordion {
+    display: block;
+    padding: 20px 20px 24px;
+    border-top: 1px solid var(--border-default);
+    background: var(--bg-default);
+  }
+  .doc-accordion .doc-section + .doc-section { margin-top: 20px; }
+  .doc-section-meta {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-low);
+  }
+  /* Dropdown-side tooltip trigger */
+  .progress-info.progress-info-dd {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+  }
+  .progress-info-dd:hover .progress-tooltip,
+  .progress-info-dd:focus .progress-tooltip,
+  .progress-info-dd:focus-visible .progress-tooltip {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .progress-info-dd .progress-tooltip {
+    left: calc(100% + 10px);
+    right: auto;
+    bottom: auto;
+    top: 50%;
+    transform: translateY(calc(-50% + 2px));
+    width: 260px;
+  }
+  .progress-info-dd:hover .progress-tooltip,
+  .progress-info-dd:focus .progress-tooltip,
+  .progress-info-dd:focus-visible .progress-tooltip {
+    transform: translateY(-50%);
+  }
+  .progress-info-dd .progress-tooltip::after {
+    left: -10px;
+    top: 50%;
+    right: auto;
+    border: 5px solid transparent;
+    border-right-color: #1F2223;
+    border-top-color: transparent;
+    transform: translateY(-50%);
+  }
+
+  /* ===== Sidebar (steps) ====================================== */
+  .sidebar {
+    grid-area: sidebar;
+    background: var(--bg-default);
+    border-right: 1px solid var(--border-default);
+    padding: 28px 16px 16px;
+    overflow: auto;
+  }
+  .steps { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; position: relative; }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 8px;
+    border-radius: var(--radius-md);
+    color: var(--fg-low);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.006em;
+    line-height: 20px;
+    cursor: default;
+    position: relative;
+  }
+  .step .marker {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    background: var(--bg-default);
+    border: 1.5px solid var(--border-default);
+    color: var(--fg-low);
+  }
+  .step.done {
+    color: var(--fg-high);
+  }
+  .step.done .marker {
+    background: var(--success-default);
+    border-color: var(--success-default);
+    color: #fff;
+  }
+  .step.active {
+    color: var(--fg-high);
+    font-weight: 600;
+  }
+  .step.active .marker {
+    background: var(--primary-default);
+    border-color: var(--primary-default);
+    color: #fff;
+  }
+  .step.upcoming { color: var(--fg-disabled); }
+
+  /* ===== Footer (full-width) ================================== */
+  .footer {
+    grid-area: footer;
+    background: var(--bg-app);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px 0 24px;
+    font-size: 12px;
+    color: var(--fg-low);
+    line-height: 16px;
+    letter-spacing: 0;
+  }
+  .footer .left { padding-left: 8px; }
+  .footer nav { display: flex; gap: 18px; }
+  .footer nav a { color: var(--fg-low); text-decoration: none; }
+  .footer nav a:hover { color: var(--fg-high); }
+
+  /* ===== Main column ========================================== */
+  .main {
+    grid-area: main;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+
+  .scroll-wrap {
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .scroll {
+    height: 100%;
+    overflow-y: auto;
+    padding: 32px 56px 24px 40px;
+    scroll-padding-bottom: 24px;
+    scrollbar-gutter: stable;
+  }
+  .scroll::-webkit-scrollbar { width: 10px; }
+  .scroll::-webkit-scrollbar-thumb { background: #DFE1E2; border-radius: 999px; border: 3px solid var(--bg-app); }
+  .scroll::-webkit-scrollbar-thumb:hover { background: #BBBEBF; }
+
+  /* Bottom fade overlay */
+  .scroll-fade {
+    pointer-events: none;
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, rgba(251,252,253,0) 0%, rgba(251,252,253,0.85) 55%, rgba(251,252,253,1) 100%);
+  }
+
+  /* ===== Page heading ========================================= */
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    letter-spacing: -0.017em;
+    color: var(--fg-high);
+    margin: 0 0 8px;
+  }
+  .eyebrow {
+    margin: 0 0 4px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    color: var(--fg-low);
+  }
+  .page-subtitle {
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: -0.006em;
+    color: var(--fg-medium);
+    margin: 0;
+    max-width: 720px;
+  }
+  .page-subtitle .more-info {
+    color: var(--comp-link);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .page-subtitle .more-info:hover { text-decoration: underline; }
+
+  /* ===== Progress bar ========================================= */
+  .progress {
+    max-width: 880px;
+    margin-bottom: 16px;
+  }
+  .progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .progress-label {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0;
+    color: var(--fg-low);
+    font-weight: 500;
+  }
+  .progress-step {
+    color: var(--fg-low);
+    font-weight: 400;
+    opacity: 0.75;
+  }
+  .progress-value {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-medium);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    border-radius: var(--radius-pill);
+    padding: 2px 0;
+    transition: background 200ms, color 200ms, padding 200ms;
+  }
+  .progress-value.is-warning {
+    background: var(--bg-warning);
+    color: var(--fg-warning);
+    font-weight: 600;
+    padding: 4px 12px;
+  }
+  .progress-track {
+    position: relative;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--bg-disabled);
+    overflow: hidden;
+  }
+  .progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0%;
+    background: var(--primary-default);
+    border-radius: 999px;
+    transition: width 320ms cubic-bezier(.4, 0, .2, 1), background-color 200ms;
+  }
+  .progress.complete .progress-value {
+    background: var(--success-subtle);
+    color: var(--success-default);
+  }
+  .progress.complete .progress-fill { background: var(--success-default); }
+
+  /* Tooltip on progress label */
+  .progress-label-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+  }
+  .progress-info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: 0;
+    color: var(--fg-low);
+    cursor: help;
+    border-radius: 50%;
+  }
+  .progress-info:hover { color: var(--fg-medium); }
+  .progress-tooltip {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px);
+    width: 280px;
+    padding: 10px 12px;
+    background: #1F2223;
+    color: #fff;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.002em;
+    font-weight: 400;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(31, 34, 35, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(2px);
+    transition: opacity 150ms, transform 150ms;
+    z-index: 5;
+  }
+  .progress-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 100%;
+    border: 5px solid transparent;
+    border-top-color: #1F2223;
+  }
+  .progress-label-wrap:hover .progress-tooltip,
+  .progress-info:focus + .progress-tooltip,
+  .progress-info:focus-visible + .progress-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== Add UBO text button ================================== */
+  .add-ubo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 6px 8px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--primary-default);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.006em;
+    border-radius: var(--radius-md);
+  }
+  .add-ubo:hover { background: var(--bg-active); }
+  .add-ubo svg { color: var(--primary-default); }
+
+  /* ===== UBO Card ============================================= */
+  .cards {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 880px;
+  }
+  .card {
+    background: var(--bg-default);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 16px 20px;
+    background: var(--bg-highlight);
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+  }
+  .card.collapsed .card-header { border-bottom: 0; }
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #DCE6F4;
+    color: var(--primary-default);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .avatar.has-missing {
+    background-color: transparent !important;
+    background-image: url('Project assets/assets/Icon-Warning-missing.svg') !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .avatar.has-missing .avatar-initials { display: none; }
+  .avatar.has-missing .avatar-count { display: none; }
+  .card-header .id {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+  .name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: -0.011em;
+    color: var(--fg-high);
+  }
+  .sub {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-low);
+  }
+  .doc-missing-caption,
+  .id .missing-caption {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-low);
+    font-weight: 400;
+    letter-spacing: 0;
+    margin: 0;
+  }
+  .doc-missing-caption:empty,
+  .id .missing-caption:empty { display: none; }
+
+  /* Chip */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-active);
+    color: var(--primary-default);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0;
+  }
+  .info-icon {
+    display: inline-flex;
+    color: var(--fg-low);
+    cursor: help;
+  }
+
+  .ci-badge {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 20px 24px 16px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 48px;
+    row-gap: 14px;
+  }
+  .field {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: -0.006em;
+  }
+  .field .label {
+    color: var(--fg-high);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .field .value {
+    color: var(--fg-medium);
+    font-weight: 400;
+  }
+  .field .warn {
+    display: inline-flex;
+    align-items: center;
+    color: var(--fg-warning);
+    position: relative;
+    cursor: default;
+  }
+  .warn::after {
+    content: "Missing information";
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--fg-high);
+    color: var(--bg-default);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms;
+    z-index: 100;
+  }
+  .warn::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--fg-high);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms;
+    z-index: 101;
+  }
+  .warn:hover::after,
+  .warn:hover::before { opacity: 1; }
+  .field.address .value {
+    line-height: 22px;
+  }
+
+  /* Card footer (actions) */
+  .card-actions {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0;
+  }
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.006em;
+    line-height: 22px;
+    border-radius: var(--radius-md);
+    transition: background 180ms;
+  }
+  .action-btn.delete { color: var(--fg-critical); }
+  .action-btn.delete:hover { background: #FDECEE; }
+  .action-btn.edit { color: var(--primary-default); }
+  .action-btn.edit:hover { background: var(--bg-active); }
+  .action-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border-default);
+    margin: 0 6px;
+  }
+
+  /* Collapsed card (peek) */
+  .card.collapsed .card-header {
+    padding: 14px 20px;
+  }
+  .card.collapsed .avatar {
+    background: #E5EBF4;
+    color: #8FA3C2;
+  }
+  .card.collapsed .name {
+    color: rgba(31, 34, 35, 0.55);
+  }
+  .card.collapsed .chip {
+    background: rgba(235, 238, 244, 0.7);
+    color: rgba(51, 88, 148, 0.55);
+  }
+  .card.collapsed .info-icon {
+    color: rgba(115, 118, 119, 0.5);
+  }
+  .card.collapsed .ci-badge { opacity: 0.4; }
+
+  /* ===== Card "checked / confirmed" state ===================== */
+  .card.checked {
+    border-color: var(--success-default);
+  }
+  .avatar-check { display: none; }
+  .card.checked .avatar,
+  .doc-card.checked .avatar {
+    background-color: transparent !important;
+    background-image: url('Project assets/assets/avatar-checked.svg') !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .card.checked .avatar .avatar-initials,
+  .doc-card.checked .avatar .avatar-initials { display: none; }
+  .card.checked .avatar .avatar-check,
+  .doc-card.checked .avatar .avatar-check { display: none; }
+  .doc-card.checked .doc-attach,
+  .doc-card.checked .acc-toggle,
+  .doc-card.checked .doc-action {
+    color: var(--fg-disabled) !important;
+    pointer-events: none !important;
+    opacity: 0.55;
+  }
+  .doc-card.checked {
+    border-color: var(--success-default) !important;
+  }
+  .doc-card.checked .doc-header { cursor: default; }
+
+  /* ===== Card "checked but missing docs" state (Step 2 only) === */
+  body[data-step-active="2"] .card.checked.missing-docs,
+  body[data-step-active="2"] .doc-card.checked.missing-docs {
+    border-color: #483C10 !important;
+  }
+  body[data-step-active="2"][data-card-style="tinted"] .card.checked.missing-docs,
+  body[data-step-active="2"][data-card-style="tinted"] .doc-card.checked.missing-docs {
+    background: #FFF9E3;
+  }
+  body[data-step-active="2"][data-card-style="elevated"] .card.checked.missing-docs,
+  body[data-step-active="2"][data-card-style="elevated"] .doc-card.checked.missing-docs {
+    box-shadow: 0 1px 2px rgba(72,60,16,0.10), 0 8px 24px rgba(72,60,16,0.12);
+  }
+
+  /* ============================================================
+     Bottom action bar (pinned within main column)
+     ============================================================ */
+  .action-bar {
+    background: var(--bg-default);
+    border-top: 1px solid var(--border-default);
+    padding: 20px 56px 20px 40px;
+    box-shadow: 0 -4px 8px rgba(95, 98, 99, 0.04);
+    z-index: 2;
+  }
+
+  /* Custom checkbox */
+  .checkbox {
+    position: relative;
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1.5px solid var(--border-interactive);
+    background: var(--bg-default);
+    transition: background 150ms, border-color 150ms;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .checkbox:hover { border-color: var(--fg-low); }
+  .checkbox input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .checkbox .check {
+    opacity: 0;
+    color: #fff;
+    transition: opacity 100ms ease;
+  }
+  .checkbox:has(input:checked) {
+    background: var(--primary-default);
+    border-color: var(--primary-default);
+  }
+  .checkbox:has(input:checked) .check { opacity: 1; }
+  .checkbox:has(input:focus-visible) {
+    box-shadow: 0 0 0 3px rgba(133, 155, 191, 0.4);
+  }
+
+  /* Action buttons */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 880px;
+  }
+  .btn {
+    height: 44px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.011em;
+    cursor: pointer;
+    transition: background 180ms, color 180ms, border-color 180ms;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 20px;
+  }
+  .btn-secondary {
+    background: var(--bg-default);
+    color: var(--primary-default);
+    border: 1.5px solid var(--primary-default);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-active);
+  }
+  .btn-secondary:active {
+    background: #DBE3F0;
+  }
+  .btn-primary {
+    background: var(--primary-default);
+    color: #fff;
+    border: 1.5px solid var(--primary-default);
+  }
+  .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  .btn-primary:active { background: var(--primary-active); border-color: var(--primary-active); }
+  .btn-primary:disabled {
+    background: var(--bg-disabled);
+    color: var(--fg-disabled);
+    border-color: var(--bg-disabled);
+    cursor: not-allowed;
+  }
+
+  /* ============================================================
+     Clara Intelligence sparkle (gradient)
+     ============================================================ */
+  .ci-icon { width: 22px; height: 22px; display: block; }
+
+  /* ===== Step pane visibility ================================ */
+  .step-pane[hidden] { display: none; }
+
+  /* ===== Confirmation checkbox row =========================== */
+  .confirm-row {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 880px;
+    margin: 0 0 16px 0;
+    padding: 4px 2px;
+    cursor: pointer;
+    user-select: none;
+  }
+  body[data-step-active="2"] .confirm-row { display: flex; }
+
+  .confirm-check {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .confirm-box {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border-strong, #C9CACB);
+    background: var(--bg-default);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+    margin-top: 1px;
+  }
+  .confirm-row:hover .confirm-box { border-color: var(--fg-low); }
+  .confirm-check:focus-visible + .confirm-box {
+    outline: 2px solid var(--primary-outline);
+    outline-offset: 2px;
+  }
+  .confirm-check:checked + .confirm-box {
+    background: var(--primary-default);
+    border-color: var(--primary-default);
+    color: #fff;
+  }
+  .confirm-label {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--fg-high);
+  }
+
+  /* ===== Documentation cards (Step 2) ======================== */
+  .docs-cards {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 880px;
+  }
+  .doc-card {
+    background: var(--bg-default);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .doc-header {
+    padding: 16px 20px;
+    background: var(--bg-highlight);
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .doc-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: -0.011em;
+    color: var(--fg-high);
+  }
+  .doc-body {
+    padding: 18px 22px 14px;
+    display: flex;
+    flex-direction: column;
+  }
+  .doc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .doc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--fg-low);
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .doc-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+  .doc-icon img { display: block; }
+  .doc-row.attached { color: var(--fg-high); }
+  .doc-row.attached .doc-row-label { font-weight: 500; }
+
+  .doc-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+  .doc-header-status {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 4px 0 0;
+  }
+  .doc-card.is-open .doc-header-status { display: none; }
+  .doc-header .avatar { margin-top: 2px; }
+  .doc-header .doc-chevron { margin-left: auto; flex-shrink: 0; margin-top: 2px; }
+  .doc-status-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--fg-low);
+    font-weight: 400;
+  }
+  .doc-status-item.attached {
+    color: var(--fg-high);
+    font-weight: 500;
+  }
+
+  .doc-attach {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--primary-default);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.006em;
+    border-radius: var(--radius-md);
+  }
+  .doc-attach:hover { background: var(--bg-active); }
+  .doc-attach svg { color: var(--primary-default); }
+
+  /* Density tweak overrides for doc cards */
+  body[data-density="compact"] .docs-cards { gap: 10px; }
+  body[data-density="compact"] .doc-header { padding: 12px 16px; }
+  body[data-density="compact"] .doc-body { padding: 14px 18px 10px; }
+  body[data-density="cozy"] .docs-cards { gap: 22px; }
+  body[data-density="cozy"] .doc-header { padding: 22px 24px; }
+  body[data-density="cozy"] .doc-body { padding: 24px 28px 18px; }
+
+  /* Card-style tweak overrides for doc cards */
+  body[data-card-style="tinted"] .doc-card {
+    border-color: transparent;
+    background: var(--bg-highlight);
+  }
+  body[data-card-style="tinted"] .doc-header {
+    background: rgba(0,0,0,0.025);
+    border-bottom-color: rgba(31, 34, 35, 0.06);
+  }
+  body[data-card-style="elevated"] .doc-card {
+    border-color: transparent;
+    box-shadow: 0 1px 2px rgba(95,98,99,0.06), 0 8px 24px rgba(95,98,99,0.08);
+  }
+  body[data-card-style="elevated"] .doc-header {
+    background: var(--bg-default);
+    border-bottom-color: var(--border-default);
+  }
+
+  /* ===== Doc upload sheet (per-UBO documentation) ============= */
+  .doc-section { margin-bottom: 24px; }
+  .doc-section + .doc-section { margin-top: 4px; }
+  .doc-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.011em;
+    color: var(--fg-high);
+    margin: 0 0 8px;
+    line-height: 22px;
+  }
+  .doc-section-desc {
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--fg-medium);
+    margin: 0 0 12px;
+  }
+  .dropzone {
+    width: 100%;
+    min-height: 124px;
+    border: 1.5px dashed var(--border-default);
+    border-radius: var(--radius-lg);
+    background: var(--bg-highlight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease;
+    box-sizing: border-box;
+  }
+  .dropzone:hover {
+    border-color: var(--fg-low);
+    background: var(--bg-active);
+  }
+  .dropzone-prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--fg-medium);
+  }
+  .dropzone-prompt .dz-link {
+    color: var(--primary-default);
+    font-weight: 600;
+  }
+  .dropzone-prompt svg {
+    color: var(--fg-medium);
+    flex-shrink: 0;
+  }
+  .dropzone-meta {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--fg-low);
+  }
+
+  /* Uploaded state */
+  .dropzone.uploaded {
+    border: 1.5px solid var(--success-default);
+    background: var(--bg-default);
+    cursor: default;
+    padding: 14px 16px;
+    min-height: 0;
+    justify-content: stretch;
+  }
+  .dropzone.uploaded:hover {
+    background: var(--bg-default);
+    border-color: var(--success-default);
+  }
+  .dz-file {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  .dz-file-icon {
+    width: 32px; height: 32px;
+    border-radius: 7px;
+    background: var(--success-subtle);
+    color: var(--success-default);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .dz-file-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fg-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dz-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--fg-medium);
+  }
+  .dz-action {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 4px;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .dz-action:hover { background: var(--bg-active); color: var(--fg-high); }
+
+  /* Multiple dropzone — file list */
+  .dz-file-list:empty { display: none; }
+  .dz-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 8px;
+  }
+  .dz-file-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg-high);
+    margin-bottom: 6px;
+    padding: 0;
+  }
+  .dz-remove-all {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--fg-low);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    padding: 2px 4px;
+    border-radius: var(--radius-md);
+  }
+  .dz-remove-all:hover { color: var(--fg-critical); }
+  .dz-file-item {
+    background: var(--bg-highlight);
+    border: 1.5px solid var(--success-default);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+  .dz-file-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    background: var(--success-subtle);
+    color: var(--success-default);
+  }
+  .dz-file-item-name {
+    flex: 1;
+    font-size: 14px;
+    color: var(--fg-high);
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dz-file-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .dz-file-item-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--fg-low);
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: var(--radius-md);
+  }
+  .dz-file-item-btn:hover { color: var(--fg-high); }
+
+  /* ============================================================
+     Tweak — Theme variants
+     Toggle via [data-theme="..."] on <body>
+     ============================================================ */
+  body[data-theme="aurora"] {
+    --primary-default: #5C3CD7;
+    --primary-hover:   #4928C7;
+    --primary-active:  #3A1FAA;
+    --primary-outline: #B6A6F0;
+    --bg-active:       #EFEAFD;
+    --comp-link:       #5C3CD7;
+    --bg-app:          #F8F6FC;
+  }
+  body[data-theme="aurora"] .scroll-fade {
+    background: linear-gradient(to bottom, rgba(248,246,252,0) 0%, rgba(248,246,252,0.85) 55%, rgba(248,246,252,1) 100%);
+  }
+  body[data-theme="aurora"] .avatar { background: #E5DEFA; color: #5C3CD7; }
+  body[data-theme="aurora"] .chip   { background: #E5DEFA; color: #5C3CD7; }
+
+  body[data-theme="bold"] {
+    --primary-default: #0E1116;
+    --primary-hover:   #1C2028;
+    --primary-active:  #000000;
+    --primary-outline: #6B7280;
+    --bg-active:       #ECEEF1;
+    --comp-link:       #0E1116;
+    --bg-app:          #F2F3F5;
+  }
+  body[data-theme="bold"] .scroll-fade {
+    background: linear-gradient(to bottom, rgba(242,243,245,0) 0%, rgba(242,243,245,0.85) 55%, rgba(242,243,245,1) 100%);
+  }
+  body[data-theme="bold"] .avatar { background: #1F2223; color: #FFFFFF; }
+  body[data-theme="bold"] .chip   { background: #ECEEF1; color: #0E1116; }
+  body[data-theme="bold"] .step.active .marker {
+    background: #0E1116;
+    border-color: #0E1116;
+  }
+
+  /* ============================================================
+     Tweak — Density variants
+     ============================================================ */
+  body[data-density="compact"] .card-header { padding: 12px 16px; }
+  body[data-density="compact"] .card-body { padding: 14px 18px 12px; }
+  body[data-density="compact"] .grid-2 { row-gap: 8px; column-gap: 36px; }
+  body[data-density="compact"] .card-actions { padding: 8px 14px; }
+  body[data-density="compact"] .cards { gap: 10px; }
+  body[data-density="compact"] .scroll { padding: 20px 56px 16px 40px; }
+  body[data-density="compact"] .add-ubo { margin-top: 14px; }
+  body[data-density="compact"] .field { font-size: 13px; line-height: 20px; }
+
+  body[data-density="cozy"] .card-header { padding: 22px 24px; }
+  body[data-density="cozy"] .card-body { padding: 28px 28px 22px; }
+  body[data-density="cozy"] .grid-2 { row-gap: 18px; column-gap: 56px; }
+  body[data-density="cozy"] .card-actions { padding: 16px 24px; }
+  body[data-density="cozy"] .cards { gap: 22px; }
+  body[data-density="cozy"] .scroll { padding: 40px 56px 32px 48px; }
+  body[data-density="cozy"] .add-ubo { margin-top: 32px; }
+  body[data-density="cozy"] .field { font-size: 15px; line-height: 24px; }
+
+  /* ============================================================
+     Tweak — Card style variants
+     ============================================================ */
+  body[data-card-style="tinted"] .card {
+    border-color: transparent;
+    background: var(--bg-highlight);
+  }
+  body[data-card-style="tinted"] .card-header {
+    background: rgba(0,0,0,0.025);
+    border-bottom-color: rgba(31, 34, 35, 0.06);
+  }
+  body[data-card-style="tinted"] .card-actions {
+    border-top-color: rgba(31, 34, 35, 0.06);
+  }
+  body[data-card-style="tinted"] .card.checked {
+    background: var(--success-subtle);
+  }
+
+  body[data-card-style="elevated"] .card {
+    border-color: transparent;
+    box-shadow: 0 1px 2px rgba(95,98,99,0.06), 0 8px 24px rgba(95,98,99,0.08);
+  }
+  body[data-card-style="elevated"] .card-header {
+    background: var(--bg-default);
+    border-bottom-color: var(--border-default);
+  }
+  body[data-card-style="elevated"] .card.checked {
+    box-shadow: 0 1px 2px rgba(53,109,41,0.10), 0 8px 24px rgba(53,109,41,0.12);
+  }
+
+  /* ============================================================
+     Side sheet (Edit UBO)
+     ============================================================ */
+  .scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(115, 118, 119, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms cubic-bezier(.4,0,.2,1);
+    z-index: 100;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100vh;
+    width: 480px;
+    max-width: 100vw;
+    background: var(--bg-default);
+    box-shadow: -8px 8px 24px rgba(95, 98, 99, 0.18);
+    transform: translateX(100%);
+    transition: transform 280ms cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+    z-index: 101;
+    will-change: transform;
+  }
+  .sheet.open { transform: translateX(0); }
+
+  .sheet-header {
+    flex-shrink: 0;
+    padding: 24px 28px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sheet-title {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: -0.014em;
+    color: var(--fg-high);
+  }
+  .sheet-close {
+    width: 32px; height: 32px;
+    border: 0; padding: 0;
+    background: transparent;
+    border-radius: var(--radius-md);
+    color: var(--fg-medium);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 150ms;
+  }
+  .sheet-close:hover { background: var(--bg-disabled); }
+
+  .sheet-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 28px 24px;
+    scrollbar-gutter: stable;
+  }
+  .sheet-body::-webkit-scrollbar { width: 8px; }
+  .sheet-body::-webkit-scrollbar-thumb { background: #DFE1E2; border-radius: 999px; border: 2px solid #fff; }
+
+  /* Callout banner */
+  .callout {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--bg-active);
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+  }
+  .callout svg { color: var(--primary-default); flex-shrink: 0; margin-top: 1px; }
+  .callout p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -0.006em;
+    color: var(--fg-medium);
+  }
+  .callout p strong { color: var(--primary-default); font-weight: 600; }
+
+  /* Section header inside sheet */
+  .sheet-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    color: var(--fg-high);
+    letter-spacing: -0.006em;
+    margin: 0 0 12px;
+  }
+
+  /* Radio group */
+  .radio-row {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 24px;
+  }
+  .radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: -0.006em;
+    color: var(--fg-high);
+    user-select: none;
+  }
+  .radio input { position: absolute; opacity: 0; pointer-events: none; }
+  .radio .dot {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-interactive);
+    background: var(--bg-default);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 150ms, background 150ms;
+  }
+  .radio:hover .dot { border-color: var(--fg-low); }
+  .radio input:checked + .dot {
+    border-color: var(--primary-default);
+    background: var(--primary-default);
+  }
+  .radio input:checked + .dot::after {
+    content: "";
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #fff;
+  }
+  .radio input:focus-visible + .dot {
+    box-shadow: 0 0 0 3px rgba(133, 155, 191, 0.4);
+  }
+
+  /* Floating-label input */
+  .field-row {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .field-row.cols-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .input-wrap {
+    position: relative;
+  }
+  .input-wrap > .input,
+  .input-wrap > .select {
+    width: 100%;
+    height: 52px;
+    padding: 18px 14px 6px;
+    border: 1px solid var(--border-interactive);
+    border-radius: var(--radius-md);
+    background: var(--bg-default);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: -0.006em;
+    color: var(--fg-high);
+    outline: 0;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .input-wrap > .input:hover,
+  .input-wrap > .select:hover {
+    border-color: var(--fg-low);
+  }
+  .input-wrap > .input:focus,
+  .input-wrap > .select:focus {
+    border-color: var(--primary-default);
+    box-shadow: 0 0 0 3px rgba(133, 155, 191, 0.32);
+  }
+  .input-wrap > .input.placeholder-only {
+    padding: 0 14px;
+    color: var(--fg-low);
+  }
+
+  .input-wrap > .field-label {
+    position: absolute;
+    top: 8px;
+    left: 14px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 14px;
+    letter-spacing: 0;
+    color: var(--fg-low);
+    pointer-events: none;
+    background: transparent;
+    padding: 0 2px;
+  }
+  .input-wrap > .input-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fg-low);
+    pointer-events: none;
+  }
+  .input-wrap > .select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 38px;
+    cursor: pointer;
+  }
+  .helper {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-low);
+    padding: 4px 4px 0;
+    margin: 0;
+  }
+  .helper.error { color: var(--fg-warning); }
+
+  .pep-row {
+    margin-top: 24px;
+  }
+  .pep-row .label-with-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .pep-row .label-with-info span {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fg-high);
+    letter-spacing: -0.006em;
+  }
+  .pep-row .label-with-info svg { color: var(--primary-default); }
+
+  .address-block {
+    margin-top: 24px;
+    padding-top: 8px;
+  }
+  .address-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .address-row .label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fg-high);
+  }
+  .change-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 0;
+    color: var(--primary-default);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.006em;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: var(--radius-md);
+  }
+  .change-address:hover { background: var(--bg-active); }
+  .address-text {
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: -0.006em;
+    color: var(--fg-medium);
+    margin: 0;
+  }
+
+  .sheet-footer {
+    flex-shrink: 0;
+    padding: 16px 28px 20px;
+    border-top: 1px solid var(--border-default);
+    background: var(--bg-default);
+  }
+  .sheet-footer .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sheet-footer .step-meta {
+    text-align: center;
+    font-size: 12px;
+    color: var(--fg-low);
+    line-height: 16px;
+    margin: 8px 0 0;
+  }
+
+  /* ===== Submit request (Step 3) ============================= */
+  .submit-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 880px;
+    margin-top: 16px;
+  }
+  .submit-card {
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    background: var(--bg-default);
+  }
+  .submit-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .submit-card-check {
+    color: var(--success-default);
+    display: flex;
+    flex-shrink: 0;
+  }
+  .submit-card-check.is-warning {
+    color: var(--fg-warning);
+  }
+  .submit-card-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fg-high);
+    line-height: 24px;
+  }
+  .submit-pct-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-warning);
+    color: var(--fg-warning);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    position: relative;
+    cursor: default;
+  }
+  .submit-pct-chip::after {
+    content: "Complete 100% of the 2 step information to speed up your request and unlock better credit offers.";
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--fg-high);
+    color: var(--bg-default);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    white-space: normal;
+    width: 220px;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms;
+    z-index: 100;
+  }
+  .submit-pct-chip:hover::after {
+    opacity: 1;
+  }
+  .submit-pct-chip::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--fg-high);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms;
+    z-index: 102;
+  }
+  .submit-pct-chip:hover::before { opacity: 1; }
+  .submit-ubo-status[data-tooltip]::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--fg-high);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms;
+    z-index: 102;
+  }
+  .submit-ubo-status[data-tooltip]:hover::before { opacity: 1; }
+  .submit-card-body {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--fg-medium);
+  }
+  .submit-card-doc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+    font-size: 14px;
+    color: var(--fg-medium);
+  }
+  .submit-ubos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .submit-ubo-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    color: var(--fg-high);
+  }
+  .submit-ubo-name {
+    font-weight: 500;
+  }
+  .submit-ubo-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    cursor: default;
+  }
+  .submit-ubo-status.is-ok  { color: var(--fg-medium); }
+  .submit-ubo-status.is-warn { color: var(--fg-medium); }
+
+  /* Tooltip */
+  .submit-ubo-status[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--fg-high);
+    color: var(--bg-default);
+    font-size: 12px;
+    line-height: 16px;
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* Action bar in step 3: hide progress + checkbox */
+  body[data-step-active="3"] .progress,
+  body[data-step-active="3"] #confirm-row { display: none; }
+
+  /* ===== Submit card chevron ================================== */
+  #submit-ubos-card { position: relative; }
+  .submit-card-chevron {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 0;
+    color: var(--fg-low);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: var(--radius-md);
+    transition: color 150ms;
+  }
+  .submit-card-chevron:hover { color: var(--fg-high); }
+
+  #submit-ubos-card.is-editable {
+    cursor: pointer;
+  }
+  #submit-ubos-card.is-editable:hover {
+    border-color: var(--border-interactive);
+  }
+
+</style>
+</head>
+<body data-theme="clara" data-density="regular" data-card-style="bordered">
+
+<div class="app">
+
+  <!-- ====================== Top bar ====================== -->
+  <header class="topbar" data-screen-label="topbar">
+    <div class="brand">
+      <!-- Clara monogram -->
+      <svg class="logo" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.638 18.072a.559.559 0 0 1-1.12 0 5.522 5.522 0 0 0-5.517-5.513.559.559 0 1 1 0-1.118 5.522 5.522 0 0 0 5.518-5.513.56.56 0 0 1 1.119 0 5.522 5.522 0 0 0 5.517 5.513H21.6C21.31 6.407 17.119 2.4 12.009 2.4c-5.299 0-9.61 4.307-9.61 9.6 0 5.294 4.311 9.6 9.61 9.6 5.11 0 9.3-4.007 9.59-9.041h-3.444a5.522 5.522 0 0 0-5.517 5.513Z"></path>
+      </svg>
+      <span class="name">Clara Request</span>
+    </div>
+
+    <button class="company-pill" type="button" aria-label="Switch company">
+      <span class="ci">CN</span>
+      <span class="cn">Company name, Inc.</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+
+    <div class="right">
+      <button class="top-action" type="button" aria-label="Language">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span>English</span>
+        <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <button class="top-action" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 14h3v7H3a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM21 14h-3v7h3a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1z"/>
+          <path d="M4 14v-3a8 8 0 0 1 16 0v3"/>
+          <path d="M16 21h-3a2 2 0 0 1 0-4"/>
+        </svg>
+        <span>Help</span>
+      </button>
+      <button class="top-action" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>My profile</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ====================== Sidebar (steps) ====================== -->
+  <aside class="sidebar" data-screen-label="onboarding-steps">
+    <ol class="steps">
+      <li class="step done">
+        <span class="marker"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Contact information</span>
+      </li>
+      <li class="step done">
+        <span class="marker"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Financial profile</span>
+      </li>
+      <li class="step done">
+        <span class="marker"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Documentation</span>
+      </li>
+      <li class="step done">
+        <span class="marker"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Credit history</span>
+      </li>
+      <li class="step done">
+        <span class="marker"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Fiscal information</span>
+      </li>
+      <li class="step done">
+        <span class="marker"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Legal representative</span>
+      </li>
+      <li class="step active" aria-current="step">
+        <span class="marker">7</span>
+        <span>UBOs</span>
+      </li>
+      <li class="step upcoming">
+        <span class="marker">8</span>
+        <span>Submit request</span>
+      </li>
+    </ol>
+  </aside>
+
+  <!-- ====================== Main ====================== -->
+  <main class="main">
+    <div class="scroll-wrap">
+      <div class="scroll" id="scroll" data-screen-label="ubos-content" data-step="1">
+
+        <!-- Step 1 — Confirm UBO information -->
+        <section class="step-pane" data-step-pane="1">
+        <p class="eyebrow">Step 1 of 2</p>
+        <h1 class="page-title">Review and complete your UBOs information</h1>
+        <p class="page-subtitle">
+          Precise details speed up your application and unlock better credit offers.
+          <a href="#" class="more-info">More information</a>
+        </p>
+
+        <button class="add-ubo" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span>Add UBO</span>
+        </button>
+
+        <div class="cards">
+
+          <!-- ====== UBO 1 (expanded) ====== -->
+          <article class="card" data-screen-label="ubo-1" data-ubo="ubo-1">
+            <header class="card-header">
+              <div class="avatar"><span class="avatar-initials">AJ</span><span class="avatar-count" aria-hidden="true"></span><svg class="avatar-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="id">
+                <div class="name-row">
+                  <span class="name" data-field="name">Alejandro Javier Ortega Ruiz</span>
+                  <span class="chip">No PEP</span>
+                  <span class="info-icon" title="No PEP — Not a Politically Exposed Person">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                  </span>
+                </div>
+                <div class="sub"><span data-field="shareholding">40%</span> Shareholding</div>
+                <span class="missing-caption" aria-live="polite"></span>
+              </div>
+              <div class="ci-badge" title="Field assisted by Clara Intelligence">
+                <!-- Clara Intelligence: two sparkles, gradient fill -->
+                <svg class="ci-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="ci-grad-1" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%"  stop-color="#5353FA"/>
+                      <stop offset="100%" stop-color="#E122F6"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#ci-grad-1)" d="M14.2 2.4a.6.6 0 0 1 1.16 0c.45 2.07 2.07 3.69 4.14 4.14a.6.6 0 0 1 0 1.16c-2.07.45-3.69 2.07-4.14 4.14a.6.6 0 0 1-1.16 0c-.45-2.07-2.07-3.69-4.14-4.14a.6.6 0 0 1 0-1.16c2.07-.45 3.69-2.07 4.14-4.14Z"/>
+                  <path fill="url(#ci-grad-1)" d="M7.62 12.1a.5.5 0 0 1 .96 0c.39 1.7 1.72 3.03 3.42 3.42a.5.5 0 0 1 0 .96c-1.7.39-3.03 1.72-3.42 3.42a.5.5 0 0 1-.96 0c-.39-1.7-1.72-3.03-3.42-3.42a.5.5 0 0 1 0-.96c1.7-.39 3.03-1.72 3.42-3.42Z"/>
+                </svg>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <div class="grid-2">
+                <div class="field" data-field-row="nationality"><span class="label">Nationality:</span><span class="value" data-field="nationality">Mexican</span></div>
+                <div class="field" data-field-row="profession"><span class="label">Profession:</span>
+                  <span class="warn" title="Required field is empty">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                      <line x1="12" y1="9" x2="12" y2="13"/>
+                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                  </span>
+                </div>
+
+                <div class="field" data-field-row="rfc"><span class="label">RFC:</span><span class="value" data-field="rfc">OERA850412H90</span></div>
+                <div class="field" data-field-row="birth"><span class="label">Birth date:</span><span class="value" data-field="birth">22 Apr 1995</span></div>
+
+                <div class="field" data-field-row="curp"><span class="label">CURP:</span><span class="value" data-field="curp">OERA850412HDFRRN01</span></div>
+                <div class="field" data-field-row="gender"><span class="label">Gender:</span><span class="value" data-field="gender">Male</span></div>
+
+                <div class="field address" data-field-row="address"><span class="label">Address:</span><span class="value" data-field="address">Calle Reforma 123, México, Monterrey, Nuevo León, Centro, 64000, Edificio d…</span></div>
+                <div class="field" data-field-row="city"><span class="label">City of birth:</span><span class="value" data-field="city">Monterrey</span></div>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn delete" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                <span>Delete</span>
+              </button>
+              <span class="action-divider" aria-hidden="true"></span>
+              <button class="action-btn edit" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                </svg>
+                <span>Edit</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- ====== UBO 2 (expanded) ====== -->
+          <article class="card" data-screen-label="ubo-2" data-ubo="ubo-2">
+            <header class="card-header">
+              <div class="avatar"><span class="avatar-initials">SV</span><span class="avatar-count" aria-hidden="true"></span><svg class="avatar-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="id">
+                <div class="name-row">
+                  <span class="name" data-field="name">Sofía Villagómez Luna</span>
+                  <span class="chip">No PEP</span>
+                  <span class="info-icon" title="No PEP — Not a Politically Exposed Person">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                  </span>
+                </div>
+                <div class="sub"><span data-field="shareholding">60%</span> Shareholding</div>
+                <span class="missing-caption" aria-live="polite"></span>
+              </div>
+              <div class="ci-badge" title="Field assisted by Clara Intelligence">
+                <svg class="ci-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="ci-grad-2" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%"  stop-color="#5353FA"/>
+                      <stop offset="100%" stop-color="#E122F6"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#ci-grad-2)" d="M14.2 2.4a.6.6 0 0 1 1.16 0c.45 2.07 2.07 3.69 4.14 4.14a.6.6 0 0 1 0 1.16c-2.07.45-3.69 2.07-4.14 4.14a.6.6 0 0 1-1.16 0c-.45-2.07-2.07-3.69-4.14-4.14a.6.6 0 0 1 0-1.16c2.07-.45 3.69-2.07 4.14-4.14Z"/>
+                  <path fill="url(#ci-grad-2)" d="M7.62 12.1a.5.5 0 0 1 .96 0c.39 1.7 1.72 3.03 3.42 3.42a.5.5 0 0 1 0 .96c-1.7.39-3.03 1.72-3.42 3.42a.5.5 0 0 1-.96 0c-.39-1.7-1.72-3.03-3.42-3.42a.5.5 0 0 1 0-.96c1.7-.39 3.03-1.72 3.42-3.42Z"/>
+                </svg>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <div class="grid-2">
+                <div class="field" data-field-row="nationality"><span class="label">Nationality:</span><span class="value" data-field="nationality">Mexican</span></div>
+                <div class="field" data-field-row="profession"><span class="label">Profession:</span>
+                  <span class="warn" title="Required field is empty">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                      <line x1="12" y1="9" x2="12" y2="13"/>
+                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                  </span>
+                </div>
+
+                <div class="field" data-field-row="rfc"><span class="label">RFC:</span><span class="value" data-field="rfc">VILM920825T67</span></div>
+                <div class="field" data-field-row="birth"><span class="label">Birth date:</span><span class="value" data-field="birth">18 Jan 1997</span></div>
+
+                <div class="field" data-field-row="curp"><span class="label">CURP:</span><span class="value" data-field="curp">VILM920825MDFLNR08</span></div>
+                <div class="field" data-field-row="gender"><span class="label">Gender:</span><span class="value" data-field="gender">Female</span></div>
+
+                <div class="field address" data-field-row="address"><span class="label">Address:</span><span class="value" data-field="address">Av. Paseo de la Reforma 284, 5B, Juárez, Cuauhtémoc, Ciudad de México, 066…</span></div>
+                <div class="field" data-field-row="city"><span class="label">City of birth:</span><span class="value" data-field="city">Puebla</span></div>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn delete" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                <span>Delete</span>
+              </button>
+              <span class="action-divider" aria-hidden="true"></span>
+              <button class="action-btn edit" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                </svg>
+                <span>Edit</span>
+              </button>
+            </div>
+          </article>
+
+        </div>
+        </section>
+
+        <!-- Step 2 — Documentation upload -->
+        <section class="step-pane" data-step-pane="2" hidden>
+          <p class="eyebrow">Step 2 of 2</p>
+          <h1 class="page-title">UBO documentation</h1>
+          <p class="page-subtitle">
+            Attach the INE and proof of address for each UBO. Providing this information will speed up your application and improve your credit offers.
+          </p>
+
+          <div class="docs-cards">
+            <article class="doc-card" data-doc-ubo="ubo-1">
+              <header class="doc-header" role="button" tabindex="0" aria-expanded="false" aria-controls="acc-body-ubo-1">
+                <div class="avatar"><span class="avatar-initials">AJ</span><span class="avatar-count" aria-hidden="true"></span></div>
+                <div class="doc-header-info">
+                  <div class="doc-title">Alejandro's documentation</div>
+                  <p class="doc-missing-caption" aria-live="polite">Missing 2 documents</p>
+                  <div class="doc-header-status">
+                    <span class="doc-status-item" data-doc="ine">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="16" height="16" />
+                      <span class="doc-status-label">Missing INE</span>
+                    </span>
+                    <span class="doc-status-item" data-doc="poa">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="16" height="16" />
+                      <span class="doc-status-label">Missing Proof of address</span>
+                    </span>
+                  </div>
+                </div>
+                <span class="doc-chevron" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </header>
+              <div class="doc-body">
+                <ul class="doc-list">
+                  <li class="doc-row" data-doc="ine">
+                    <span class="doc-icon" aria-hidden="true">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="20" height="20" />
+                    </span>
+                    <span class="doc-row-label">Missing INE</span>
+                  </li>
+                  <li class="doc-row" data-doc="poa">
+                    <span class="doc-icon" aria-hidden="true">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="20" height="20" />
+                    </span>
+                    <span class="doc-row-label">Missing Proof of address</span>
+                  </li>
+                </ul>
+                <button class="doc-attach" type="button">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                  </svg>
+                  <span>Attach documents</span>
+                </button>
+              </div>
+              <div class="doc-accordion" id="acc-body-ubo-1" data-doc-ubo="ubo-1" hidden>
+                <div class="doc-section">
+                  <h3 class="doc-section-title">Attach Alejandro's INE</h3>
+                  <div class="dropzone acc-dropzone" data-acc-ubo="ubo-1" data-doc="ine" tabindex="0" role="button" aria-label="Upload INE file"></div>
+                  <div class="dz-file-list" data-dz-list="ubo-1-ine"></div>
+                  <p class="doc-section-meta">Supported formats: .pdf, .jpg, .xml and .png<br/>Maximum file size: 50 MB.</p>
+                </div>
+                <div class="doc-section">
+                  <h3 class="doc-section-title">Attach Alejandro's Proof of address</h3>
+                  <p class="doc-section-desc">Submit a recent utility bill (CFE, water, phone) or bank statement under 3 months old, or a current lease as proof of address.</p>
+                  <div class="dropzone acc-dropzone" data-acc-ubo="ubo-1" data-doc="poa" tabindex="0" role="button" aria-label="Upload Proof of address file"></div>
+                  <div class="dz-file-list" data-dz-list="ubo-1-poa"></div>
+                  <p class="doc-section-meta">Supported formats: .pdf, .jpg, .xml and .png<br/>Maximum file size: 50 MB.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="doc-card" data-doc-ubo="ubo-2">
+              <header class="doc-header" role="button" tabindex="0" aria-expanded="false" aria-controls="acc-body-ubo-2">
+                <div class="avatar"><span class="avatar-initials">SV</span><span class="avatar-count" aria-hidden="true"></span></div>
+                <div class="doc-header-info">
+                  <div class="doc-title">Sofía's documentation</div>
+                  <p class="doc-missing-caption" aria-live="polite">Missing 2 documents</p>
+                  <div class="doc-header-status">
+                    <span class="doc-status-item" data-doc="ine">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="16" height="16" />
+                      <span class="doc-status-label">Missing INE</span>
+                    </span>
+                    <span class="doc-status-item" data-doc="poa">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="16" height="16" />
+                      <span class="doc-status-label">Missing Proof of address</span>
+                    </span>
+                  </div>
+                </div>
+                <span class="doc-chevron" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </header>
+              <div class="doc-body">
+                <ul class="doc-list">
+                  <li class="doc-row" data-doc="ine">
+                    <span class="doc-icon" aria-hidden="true">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="20" height="20" />
+                    </span>
+                    <span class="doc-row-label">Missing INE</span>
+                  </li>
+                  <li class="doc-row" data-doc="poa">
+                    <span class="doc-icon" aria-hidden="true">
+                      <img src="Project assets/assets/icon-doc-missing.svg" alt="" width="20" height="20" />
+                    </span>
+                    <span class="doc-row-label">Missing Proof of address</span>
+                  </li>
+                </ul>
+                <button class="doc-attach" type="button">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                  </svg>
+                  <span>Attach documents</span>
+                </button>
+              </div>
+              <div class="doc-accordion" id="acc-body-ubo-2" data-doc-ubo="ubo-2" hidden>
+                <div class="doc-section">
+                  <h3 class="doc-section-title">Attach Sofía's INE</h3>
+                  <div class="dropzone acc-dropzone" data-acc-ubo="ubo-2" data-doc="ine" tabindex="0" role="button" aria-label="Upload INE file"></div>
+                  <div class="dz-file-list" data-dz-list="ubo-2-ine"></div>
+                  <p class="doc-section-meta">Supported formats: .pdf, .jpg, .xml and .png<br/>Maximum file size: 50 MB.</p>
+                </div>
+                <div class="doc-section">
+                  <h3 class="doc-section-title">Attach Sofía's Proof of address</h3>
+                  <p class="doc-section-desc">Submit a recent utility bill (CFE, water, phone) or bank statement under 3 months old, or a current lease as proof of address.</p>
+                  <div class="dropzone acc-dropzone" data-acc-ubo="ubo-2" data-doc="poa" tabindex="0" role="button" aria-label="Upload Proof of address file"></div>
+                  <div class="dz-file-list" data-dz-list="ubo-2-poa"></div>
+                  <p class="doc-section-meta">Supported formats: .pdf, .jpg, .xml and .png<br/>Maximum file size: 50 MB.</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Step 3 — Submit request -->
+        <section class="step-pane" data-step-pane="3" hidden>
+          <h1 class="page-title">Submit request</h1>
+          <p class="page-subtitle">Almost done! Review everything carefully and send your application, then we'll take it from here.</p>
+
+          <div class="submit-cards">
+
+            <div class="submit-card">
+              <div class="submit-card-head">
+                <span class="submit-card-check">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+                </span>
+                <span class="submit-card-title">Company</span>
+              </div>
+              <p class="submit-card-body">
+                [Company name] – <strong>RFC:</strong> [RFC used in triage screen]<br/>
+                <strong>Phone number:</strong> +[Country code] [Phone number]<br/>
+                <strong>Legal address:</strong> [Street] [Street number], [Interior number], [Neighborhood], [City], [State], [Postal code].
+              </p>
+            </div>
+
+            <div class="submit-card">
+              <div class="submit-card-head">
+                <span class="submit-card-check">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+                </span>
+                <span class="submit-card-title">Financial profile</span>
+              </div>
+              <p class="submit-card-body">
+                <strong>Annual revenue:</strong> [Range selected] – Startup Company – <strong>Expected credit line:</strong> $[Entered amount] MXN
+              </p>
+            </div>
+
+            <div class="submit-card">
+              <div class="submit-card-head">
+                <span class="submit-card-check">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+                </span>
+                <span class="submit-card-title">Documentation</span>
+              </div>
+              <div class="submit-card-doc-grid">
+                <span><img src="Project assets/assets/Success.svg" width="16" height="16" alt="" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"/>Articles of Incorporation</span>
+                <span><img src="Project assets/assets/Success.svg" width="16" height="16" alt="" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"/>Public Registry of Commerce</span>
+                <span><img src="Project assets/assets/Success.svg" width="16" height="16" alt="" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"/>Assembly minutes</span>
+                <span><img src="Project assets/assets/Success.svg" width="16" height="16" alt="" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"/>Powers of Attorney</span>
+              </div>
+            </div>
+
+            <div class="submit-card">
+              <div class="submit-card-head">
+                <span class="submit-card-check">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+                </span>
+                <span class="submit-card-title">Credit history</span>
+              </div>
+              <p class="submit-card-body">Authorized Credit Bureau Inquiry</p>
+            </div>
+
+            <div class="submit-card">
+              <div class="submit-card-head">
+                <span class="submit-card-check">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+                </span>
+                <span class="submit-card-title">Fiscal information</span>
+              </div>
+              <p class="submit-card-body">
+                SAT connection successful – <strong>RFC linked:</strong> [RFC used for SAT connection]
+              </p>
+            </div>
+
+            <div class="submit-card">
+              <div class="submit-card-head">
+                <span class="submit-card-check">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+                </span>
+                <span class="submit-card-title">Legal representative</span>
+              </div>
+              <p class="submit-card-body">
+                [Legal representative full name] – <strong>Email:</strong> [Legal representative's email]
+              </p>
+            </div>
+
+            <!-- UBOs card — populated dynamically by JS -->
+            <div class="submit-card" id="submit-ubos-card">
+              <div class="submit-card-head">
+                <span class="submit-card-check" id="submit-ubos-check">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+                </span>
+                <span class="submit-card-title">UBOs</span>
+                <button class="submit-card-chevron" id="submit-ubos-chevron"
+                  type="button" aria-label="Go back to UBOs" hidden>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="submit-ubos-list" id="submit-ubos-list">
+                <!-- filled by JS -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Soft fade overlay -->
+      <div class="scroll-fade" aria-hidden="true"></div>
+    </div>
+
+    <!-- ====================== Action bar ====================== -->
+    <div class="action-bar" data-screen-label="action-bar">
+      <div class="progress" id="progress" aria-label="UBOs information progress">
+        <div class="progress-head">
+          <div class="progress-value-wrap">
+            <span class="progress-value"><span id="progress-pct">0</span>% of 2 steps completed</span>
+            <button class="progress-info progress-info-dd" type="button" aria-label="About this progress" tabindex="0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 14.5C6.71442 14.5 5.45772 14.1188 4.3888 13.4046C3.31988 12.6903 2.48676 11.6752 1.99479 10.4874C1.50282 9.29972 1.37409 7.99279 1.6249 6.73191C1.8757 5.47104 2.49477 4.31285 3.40381 3.40381C4.31285 2.49476 5.47104 1.8757 6.73192 1.6249C7.99279 1.37409 9.29973 1.50281 10.4874 1.99478C11.6752 2.48675 12.6903 3.31987 13.4046 4.38879C14.1188 5.45771 14.5 6.71442 14.5 8C14.4982 9.72335 13.8128 11.3756 12.5942 12.5942C11.3756 13.8128 9.72335 14.4982 8 14.5ZM8 2.5C6.91221 2.5 5.84884 2.82257 4.94437 3.42692C4.0399 4.03126 3.33495 4.89025 2.91867 5.89524C2.50238 6.90023 2.39347 8.0061 2.60568 9.073C2.8179 10.1399 3.34173 11.1199 4.11092 11.8891C4.8801 12.6583 5.86011 13.1821 6.92701 13.3943C7.9939 13.6065 9.09977 13.4976 10.1048 13.0813C11.1098 12.6651 11.9687 11.9601 12.5731 11.0556C13.1774 10.1512 13.5 9.0878 13.5 8C13.4983 6.54182 12.9184 5.14383 11.8873 4.11274C10.8562 3.08165 9.45819 2.50165 8 2.5ZM7.5 7.5V11C7.5 11.1326 7.55268 11.2598 7.64645 11.3536C7.74022 11.4473 7.86739 11.5 8 11.5C8.13261 11.5 8.25979 11.4473 8.35356 11.3536C8.44732 11.2598 8.5 11.1326 8.5 11V7.5C8.5 7.36739 8.44732 7.24021 8.35356 7.14645C8.25979 7.05268 8.13261 7 8 7C7.86739 7 7.74022 7.05268 7.64645 7.14645C7.55268 7.24021 7.5 7.36739 7.5 7.5ZM8.75 5.25C8.75 5.10166 8.70602 4.95666 8.6236 4.83332C8.54119 4.70999 8.42406 4.61386 8.28701 4.55709C8.14997 4.50033 7.99917 4.48547 7.85368 4.51441C7.7082 4.54335 7.57456 4.61478 7.46967 4.71967C7.36478 4.82456 7.29335 4.9582 7.26441 5.10368C7.23547 5.24917 7.25033 5.39997 7.30709 5.53701C7.36386 5.67406 7.45999 5.79119 7.58333 5.8736C7.70666 5.95601 7.85167 6 8 6C8.19892 6 8.38968 5.92098 8.53033 5.78033C8.67098 5.63968 8.75 5.44891 8.75 5.25Z" fill="currentColor"></path>
+              </svg>
+              <span class="progress-tooltip" role="tooltip">Complete 100% of the 2 step information to speed up your request and unlock better credit offers.</span>
+            </button>
+          </div>
+          <span class="progress-hint" aria-live="polite">Confirm the checkbox below in order to continue</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Confirmation checkbox (visible on Step 1 only) -->
+      <label class="confirm-row" id="confirm-row">
+        <input type="checkbox" id="confirm-check" class="confirm-check" />
+        <span class="confirm-box" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span class="confirm-label">I confirm that the UBOs information above is accurate and up to date to the best of my knowledge.</span>
+      </label>
+
+      <div class="actions">
+        <button class="btn btn-secondary" type="button">Go back</button>
+        <button class="btn btn-primary" type="button" id="continue-btn">Next step</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ====================== Footer ====================== -->
+  <footer class="footer">
+    <span class="left">© 2025 Clara</span>
+    <nav>
+      <a href="#">Terms and Conditions</a>
+      <a href="#">Privacy</a>
+      <a href="#">Help Center</a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+
+  function updateProgress() {
+    // Step 1 fields contribute 0–50%; Step 2 documents contribute 50–100%.
+    // Both steps always count toward the same total so the bar never resets.
+    const cards = document.querySelectorAll('.card');
+    let infoTotal = 0, infoFilled = 0;
+    cards.forEach(card => {
+      const fields = card.querySelectorAll('.field');
+      infoTotal += fields.length;
+      fields.forEach(f => { if (!f.querySelector('.warn')) infoFilled += 1; });
+    });
+    const infoPct = infoTotal ? (infoFilled / infoTotal) : 0;
+
+    const docRows = document.querySelectorAll('.doc-row');
+    let docTotal = docRows.length, docFilled = 0;
+    docRows.forEach(r => { if (r.classList.contains('attached')) docFilled += 1; });
+    const docPct = docTotal ? (docFilled / docTotal) : 0;
+
+    // 50/50 split between the two halves
+    const pct = Math.round((infoPct * 0.5 + docPct * 0.5) * 100);
+
+    const fill = document.getElementById('progress-fill');
+    const pctEl = document.getElementById('progress-pct');
+    const wrap = document.getElementById('progress');
+    fill.style.width = pct + '%';
+    pctEl.textContent = pct;
+    wrap.querySelector('.progress-track').setAttribute('aria-valuenow', pct);
+    wrap.classList.toggle('complete', pct === 100);
+
+    // Sync the step label based on which pane the user is in
+    const scroll = document.getElementById('scroll');
+    const step = scroll && scroll.dataset.step === '2' ? 2 : 1;
+    if (typeof updateAvatarStates === 'function') updateAvatarStates();
+    if (typeof syncProgressChip === 'function') syncProgressChip();
+  }
+  window.updateProgress = updateProgress;
+  updateProgress();
+
+  function syncProgressChip() {
+    const isChecked = !!(document.getElementById('confirm-check')
+      && document.getElementById('confirm-check').checked);
+    const pct = parseInt(
+      document.getElementById('progress-pct')?.textContent || '0', 10
+    );
+    const valueEl = document.querySelector('.progress-value');
+    if (!valueEl) return;
+    valueEl.classList.toggle('is-warning', isChecked && pct < 100);
+  }
+  window.syncProgressChip = syncProgressChip;
+
+  function updateAvatarStates() {
+    let u; try { u = uploaded; } catch(e) { u = {}; }
+    const isConfirmed = !!(document.getElementById('confirm-check')
+      && document.getElementById('confirm-check').checked);
+
+    document.querySelectorAll('.doc-card[data-doc-ubo]').forEach(card => {
+      const uboId = card.dataset.docUbo;
+      const uboData = u[uboId] || { ine: false, poa: false };
+      const missingCount = ['ine', 'poa'].filter(k => !uboData[k]).length;
+      const avatar = card.querySelector('.avatar');
+      if (avatar) {
+        const countEl = avatar.querySelector('.avatar-count');
+        if (isConfirmed && missingCount > 0) {
+          avatar.classList.add('has-missing');
+          if (countEl) countEl.textContent = missingCount;
+        } else {
+          avatar.classList.remove('has-missing');
+          if (countEl) countEl.textContent = '';
+        }
+      }
+      const caption = card.querySelector('.doc-missing-caption');
+      if (caption) {
+        if (missingCount === 0) {
+          caption.textContent = 'All documents attached';
+        } else {
+          caption.textContent = `Missing ${missingCount} document${missingCount !== 1 ? 's' : ''}`;
+        }
+      }
+    });
+
+    document.querySelectorAll('.card[data-ubo]').forEach(card => {
+      const avatar = card.querySelector('.avatar');
+      if (!avatar) return;
+      const missingCount = card.querySelectorAll('.field .warn').length;
+      const countEl = avatar.querySelector('.avatar-count');
+      const caption = card.querySelector('.id .missing-caption');
+
+      if (isConfirmed && missingCount > 0) {
+        avatar.classList.add('has-missing');
+        if (countEl) countEl.textContent = missingCount;
+        if (caption) caption.textContent = missingCount === 1
+          ? 'Missing 1 field'
+          : `Missing ${missingCount} fields`;
+      } else {
+        avatar.classList.remove('has-missing');
+        if (countEl) countEl.textContent = '';
+        if (caption) caption.textContent = '';
+      }
+    });
+  }
+  window.updateAvatarStates = updateAvatarStates;
+
+  function populateSubmitStep() {
+    const list = document.getElementById('submit-ubos-list');
+    if (!list) return;
+
+    const pct = parseInt(document.getElementById('progress-pct')?.textContent || '0', 10);
+
+    const warnImg    = '<img src="Project assets/assets/Warning.svg" width="16" height="16" alt="" aria-hidden="true" style="display:inline-block;vertical-align:middle;flex-shrink:0;">';
+    const okImg      = '<img src="Project assets/assets/Success.svg" width="16" height="16" alt="" aria-hidden="true" style="display:inline-block;vertical-align:middle;flex-shrink:0;">';
+    const pendingImg = '<img src="Project assets/assets/PendingStep.svg" width="18" height="18" alt="" aria-hidden="true" style="display:inline-block;vertical-align:middle;">';
+
+    const checkEl = document.getElementById('submit-ubos-check');
+    if (checkEl) {
+      if (pct >= 100) {
+        checkEl.innerHTML = okImg;
+      } else {
+        checkEl.innerHTML = pendingImg;
+      }
+    }
+
+    const titleEl = document.querySelector('#submit-ubos-card .submit-card-title');
+    if (titleEl) {
+      titleEl.querySelector('.submit-pct-chip')?.remove();
+      if (pct < 100) {
+        const chip = document.createElement('span');
+        chip.className = 'submit-pct-chip';
+        chip.textContent = `${pct}% Complete`;
+        titleEl.appendChild(chip);
+      }
+    }
+
+    const ubos = [
+      { id: 'ubo-1', card: document.querySelector('.card[data-ubo="ubo-1"]') },
+      { id: 'ubo-2', card: document.querySelector('.card[data-ubo="ubo-2"]') },
+    ];
+
+    const u = (typeof uploaded !== 'undefined') ? uploaded : {};
+
+    list.innerHTML = ubos.map(({ id, card }) => {
+      const nameEl = card && card.querySelector('[data-field="name"]');
+      const name = nameEl ? nameEl.textContent.trim() : id;
+
+      const missingFields = card ? card.querySelectorAll('.field .warn').length : 0;
+      const ine = !!(u[id] && u[id].ine);
+      const poa = !!(u[id] && u[id].poa);
+      const missingDocs = (!ine ? 1 : 0) + (!poa ? 1 : 0);
+      const hasMissing = missingFields > 0 || missingDocs > 0;
+
+      const tooltipParts = [];
+      if (missingFields > 0) {
+        tooltipParts.push(missingFields === 1 ? '1 field' : `${missingFields} fields`);
+      }
+      if (missingDocs > 0) {
+        tooltipParts.push(missingDocs === 1 ? '1 document' : '2 documents');
+      }
+      const tooltipText = tooltipParts.length > 0 ? `Missing ${tooltipParts.join(' and ')}` : '';
+
+      return `
+        <div class="submit-ubo-row">
+          <span class="submit-ubo-name">${name}</span>
+          ${hasMissing
+            ? `<span class="submit-ubo-status is-warn" data-tooltip="${tooltipText}" style="display:inline-flex;align-items:center;gap:6px;">${warnImg} Missing some information</span>`
+            : `<span class="submit-ubo-status is-ok" style="display:inline-flex;align-items:center;gap:6px;">${okImg} All information complete</span>`
+          }
+        </div>`;
+    }).join('');
+
+    // Mostrar chevron solo si UBOs no están al 100%
+    const isComplete = pct >= 100;
+    const chevron = document.getElementById('submit-ubos-chevron');
+    const card = document.getElementById('submit-ubos-card');
+
+    if (chevron) {
+      if (isComplete) {
+        chevron.hidden = true;
+        card?.classList.remove('is-editable');
+      } else {
+        chevron.hidden = false;
+        card?.classList.add('is-editable');
+      }
+    }
+
+    // Navegar a step 1 al hacer click en la card o el chevron
+    const handleUboCardClick = () => {
+      setStep(1);
+      const continueBtn = document.getElementById('continue-btn');
+      if (continueBtn) continueBtn.textContent = 'Next step';
+    };
+
+    // Remover listener anterior para evitar duplicados
+    const oldCard = document.getElementById('submit-ubos-card');
+    const newCard = oldCard.cloneNode(true);
+    oldCard.parentNode.replaceChild(newCard, oldCard);
+
+    // Re-obtener referencias tras el clone
+    const freshCard = document.getElementById('submit-ubos-card');
+    const freshChevron = document.getElementById('submit-ubos-chevron');
+
+    if (freshCard && !isComplete) {
+      freshCard.addEventListener('click', handleUboCardClick);
+    }
+  }
+  window.populateSubmitStep = populateSubmitStep;
+
+  // Step navigation: Continue advances 1 → 2, secondary "Go back" returns 2 → 1.
+  function setStep(n) {
+    const scroll = document.getElementById('scroll');
+    if (!scroll) return;
+    scroll.dataset.step = String(n);
+    document.body.setAttribute('data-step-active', String(n));
+    document.querySelectorAll('[data-step-pane]').forEach(p => {
+      p.hidden = (Number(p.dataset.stepPane) !== n);
+    });
+    const continueBtn = document.getElementById('continue-btn');
+    if (n === 1) {
+      if (continueBtn) continueBtn.textContent = 'Next step';
+    } else if (n === 2) {
+      if (continueBtn) continueBtn.textContent = 'Confirm and continue';
+    } else if (n === 3) {
+      if (continueBtn) continueBtn.textContent = 'Send application';
+    }
+    // Reset scroll position for clarity
+    scroll.scrollTop = 0;
+    updateProgress();
+    updateFade();
+    syncContinueDisabled();
+  }
+  window.setStep = setStep;
+
+  // The Continue button is disabled on Step 2 until the user ticks the
+  // confirmation checkbox. On Step 1, the button is always enabled.
+  function syncContinueDisabled() {
+    const scroll = document.getElementById('scroll');
+    const cur = parseInt(scroll?.dataset.step || '1', 10);
+    const continueBtn = document.getElementById('continue-btn');
+    const check = document.getElementById('confirm-check');
+    if (!continueBtn) return;
+    if (cur === 3) {
+      continueBtn.disabled = false;
+      return;
+    }
+    if (cur === 2) {
+      continueBtn.disabled = !(check && check.checked);
+    } else {
+      continueBtn.disabled = false;
+    }
+  }
+  window.syncContinueDisabled = syncContinueDisabled;
+
+  document.getElementById('continue-btn').addEventListener('click', () => {
+    const scroll = document.getElementById('scroll');
+    const cur = parseInt(scroll?.dataset.step || '1', 10);
+    if (cur === 1) {
+      setStep(2);
+    } else if (cur === 2) {
+      setStep(3);
+      populateSubmitStep();
+    }
+  });
+  const goBackBtn = document.querySelector('.action-bar .btn-secondary');
+  if (goBackBtn) {
+    goBackBtn.id = 'go-back-btn';
+    goBackBtn.addEventListener('click', () => {
+      const scroll = document.getElementById('scroll');
+      const cur = parseInt(scroll?.dataset.step || '1', 10);
+      if (cur === 2) setStep(1);
+      else if (cur === 3) setStep(2);
+    });
+  }
+  function syncCardsCheckedFromCheckbox() {
+    const cb = document.getElementById('confirm-check');
+    const isChecked = !!(cb && cb.checked);
+    const u = (typeof uploaded !== 'undefined') ? uploaded : null;
+    document.querySelectorAll('.card[data-ubo], .doc-card[data-doc-ubo]').forEach(el => {
+      const uboId = el.dataset.ubo || el.dataset.docUbo;
+      const isInfoCard = !!el.dataset.ubo;
+      const isDocCard = !!el.dataset.docUbo;
+      const missingFields = isInfoCard ? el.querySelectorAll('.field .warn').length : 0;
+      const missingDocs = isDocCard && u && uboId && u[uboId]
+        ? (!u[uboId].ine ? 1 : 0) + (!u[uboId].poa ? 1 : 0)
+        : 0;
+      const hasMissing = missingFields > 0 || missingDocs > 0;
+      const avatar = el.querySelector('.avatar');
+
+      if (isChecked && hasMissing) {
+        el.classList.remove('checked');
+        el.classList.add('has-missing');
+        if (avatar) avatar.classList.add('has-missing');
+      } else if (isChecked && !hasMissing) {
+        el.classList.add('checked');
+        el.classList.remove('has-missing');
+        if (avatar) avatar.classList.remove('has-missing');
+      } else {
+        el.classList.remove('checked');
+        el.classList.remove('has-missing');
+        if (avatar) avatar.classList.remove('has-missing');
+      }
+
+      if (isDocCard) {
+        el.classList.toggle('missing-docs', isChecked && missingDocs > 0);
+      }
+    });
+    if (typeof updateAvatarStates === 'function') updateAvatarStates();
+  }
+  const confirmCheck = document.getElementById('confirm-check');
+  if (confirmCheck) confirmCheck.addEventListener('change', () => {
+    syncContinueDisabled();
+    syncCardsCheckedFromCheckbox();
+    const hint = document.querySelector('.progress-hint');
+    if (hint) hint.style.visibility = document.getElementById('confirm-check').checked ? 'hidden' : 'visible';
+    syncProgressChip();
+  });
+
+  // Default step is 1 — initialize body attribute + button states
+  document.body.setAttribute('data-step-active', '1');
+  document.body.setAttribute('data-proposal', 'dropdown');
+
+  // ============ Drop-down proposal: doc-card accordion ============
+  function setAccordionOpen(card, open) {
+    card.classList.toggle('is-open', open);
+    const header = card.querySelector('.doc-header');
+    const body = card.querySelector('.doc-accordion');
+    if (header) header.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (body) {
+      if (open) body.removeAttribute('hidden');
+      else body.setAttribute('hidden', '');
+    }
+  }
+  document.querySelectorAll('.docs-cards .doc-card').forEach(card => {
+    const header = card.querySelector('.doc-header');
+    if (!header) return;
+    const toggle = () => {
+      setAccordionOpen(card, !card.classList.contains('is-open'));
+    };
+    header.addEventListener('click', toggle);
+    header.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+  // Multiple-attachment dropzone
+  document.querySelectorAll('.acc-dropzone').forEach(dz => {
+    const uboId = dz.dataset.accUbo;
+    const docType = dz.dataset.doc;
+    const listEl = document.querySelector(
+      `.dz-file-list[data-dz-list="${uboId}-${docType}"]`
+    );
+    const fileNames = {
+      ine: ['INE_scan.pdf', 'INE_scan_2.pdf'],
+      poa: ['Proof_of_address.pdf']
+    };
+    let uploadedFiles = [];
+
+    const renderPrompt = () => {
+      dz.innerHTML = `
+        <div class="dropzone-prompt">
+          <svg class="dz-upload" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span class="dz-text">
+            <span class="dz-link">Choose files</span> or drag and drop here
+          </span>
+        </div>`;
+    };
+
+    const renderList = () => {
+      if (!listEl) return;
+      if (uploadedFiles.length === 0) {
+        listEl.innerHTML = '';
+        return;
+      }
+      const fileIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <polyline points="9 14 11 16 15 12"/>
+      </svg>`;
+      const downloadIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>`;
+      const deleteIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6"/><path d="M14 11v6"/>
+        <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+      </svg>`;
+
+      listEl.innerHTML = `
+        <div class="dz-file-list-header">
+          <span>Files uploaded: ${uploadedFiles.length}</span>
+          <button class="dz-remove-all" type="button" data-remove-all>Remove all</button>
+        </div>
+        ${uploadedFiles.map((name, i) => `
+          <div class="dz-file-item">
+            <span class="dz-file-item-icon">${fileIcon}</span>
+            <span class="dz-file-item-name">${name}</span>
+            <span class="dz-file-item-actions">
+              <button class="dz-file-item-btn" type="button"
+                aria-label="Download" title="Download">${downloadIcon}</button>
+              <button class="dz-file-item-btn" type="button"
+                aria-label="Remove" title="Remove"
+                data-remove-index="${i}">${deleteIcon}</button>
+            </span>
+          </div>`).join('')}`;
+
+      listEl.querySelector('[data-remove-all]')?.addEventListener('click', () => {
+        uploadedFiles = [];
+        renderList();
+        markRow(dz, false);
+        if (typeof updateProgress === 'function') updateProgress();
+      });
+
+      listEl.querySelectorAll('[data-remove-index]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.removeIndex, 10);
+          uploadedFiles.splice(idx, 1);
+          renderList();
+          const hasFiles = uploadedFiles.length > 0;
+          markRow(dz, hasFiles);
+          if (typeof updateProgress === 'function') updateProgress();
+        });
+      });
+    };
+
+    renderPrompt();
+
+    dz.addEventListener('click', () => {
+      const pool = fileNames[docType] || ['document.pdf'];
+      const name = pool[uploadedFiles.length % pool.length];
+      uploadedFiles.push(name);
+      renderList();
+      markRow(dz, true);
+      if (typeof updateProgress === 'function') updateProgress();
+    });
+  });
+  function markRow(dz, attached) {
+    const uboId = dz.dataset.accUbo;
+    const type = dz.dataset.doc;
+    const card = document.querySelector(`.doc-card[data-doc-ubo="${uboId}"]`);
+    if (!card) return;
+    const row = card.querySelector(`.doc-row[data-doc="${type}"]`);
+    if (!row) return;
+    row.classList.toggle('attached', attached);
+    const iconImg = row.querySelector('.doc-icon img');
+    if (iconImg) iconImg.src = attached ? 'Project assets/assets/icon-doc-attached.svg' : 'Project assets/assets/icon-doc-missing.svg';
+    const label = row.querySelector('.doc-row-label');
+    if (label) {
+      if (attached) label.textContent = type === 'ine' ? 'INE attached' : 'Proof of address attached';
+      else label.textContent = type === 'ine' ? 'Missing INE' : 'Missing Proof of address';
+    }
+    // Mirror into the shared uploaded state so missing-docs warning reflects accordion uploads.
+    if (typeof uploaded !== 'undefined' && uploaded[uboId]) {
+      uploaded[uboId][type] = !!attached;
+    }
+    if (typeof syncCardsCheckedFromCheckbox === 'function') {
+      syncCardsCheckedFromCheckbox();
+    }
+    // Sync header status chip
+    const headerCard = document.querySelector(`.doc-card[data-doc-ubo="${uboId}"]`);
+    if (headerCard) {
+      const statusItem = headerCard.querySelector(`.doc-header-status .doc-status-item[data-doc="${type}"]`);
+      if (statusItem) {
+        statusItem.classList.toggle('attached', !!attached);
+        const img = statusItem.querySelector('img');
+        const lbl = statusItem.querySelector('.doc-status-label');
+        if (img) img.src = attached ? 'Project assets/assets/icon-doc-attached.svg' : 'Project assets/assets/icon-doc-missing.svg';
+        if (lbl) {
+          if (type === 'ine') lbl.textContent = attached ? 'INE attached' : 'Missing INE';
+          else lbl.textContent = attached ? 'Proof of address attached' : 'Missing Proof of address';
+        }
+      }
+    }
+    if (typeof updateAvatarStates === 'function') updateAvatarStates();
+  }
+  // Auto-open the first accordion when entering Step 2 (dropdown proposal only).
+  function openFirstAccordionIfDropdown() {
+    if (document.body.getAttribute('data-proposal') !== 'dropdown') return;
+    if (window.__accordionFirstVisitDone) return;
+    const first = document.querySelector('.docs-cards .doc-card');
+    if (!first) return;
+    if (!first.classList.contains('is-open')) setAccordionOpen(first, true);
+    window.__accordionFirstVisitDone = true;
+  }
+  // Hook the Continue button so the first accordion opens automatically when
+  // the user enters Step 2 (dropdown proposal only). Capture phase so this
+  // runs alongside the existing handler without needing to replace setStep.
+  const _continueBtnAcc = document.getElementById('continue-btn');
+  if (_continueBtnAcc) {
+    _continueBtnAcc.addEventListener('click', () => {
+      // Defer so the underlying step handler has switched panes first.
+      setTimeout(openFirstAccordionIfDropdown, 0);
+    });
+  }
+  // Also handle the case where the user toggles to dropdown while on Step 2.
+  document.querySelectorAll('.proposal-pill-btn[data-proposal="dropdown"]').forEach(b => {
+    b.addEventListener('click', () => setTimeout(openFirstAccordionIfDropdown, 0));
+  });
+  syncContinueDisabled();
+  const _hint = document.querySelector('.progress-hint');
+  if (_hint) _hint.style.visibility = document.getElementById('confirm-check').checked ? 'hidden' : 'visible';
+
+  // ============ UBO documentation sheet ============
+  const DOC_NAMES = { 'ubo-1': 'Alejandro', 'ubo-2': 'Sofía' };
+  // Track per-UBO uploaded state
+  const uploaded = {
+    'ubo-1': { ine: false, poa: false },
+    'ubo-2': { ine: false, poa: false },
+  };
+  const fakeFiles = {
+    ine: 'INEUBO.pdf',
+    poa: 'ProofOfAddress.pdf',
+  };
+  let currentDocUbo = null;
+  updateAvatarStates();
+
+  // These elements live further down in the DOM than this script, so we
+  // resolve them lazily via getters to avoid null references.
+  const docEl = (id) => document.getElementById(id);
+  const getDocScrim = () => docEl('doc-scrim');
+  const getDocSheet = () => docEl('doc-sheet');
+  const getDzIne    = () => docEl('dropzone-ine');
+  const getDzPoa    = () => docEl('dropzone-poa');
+  const getDocAction = () => docEl('doc-sheet-action');
+
+  function dzPromptHTML() {
+    return `
+      <div class="dropzone-prompt">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <span><span class="dz-link">Choose one file</span> or drag and drop here</span>
+      </div>
+    `;
+  }
+  function dzFileHTML(filename) {
+    return `
+      <div class="dz-file">
+        <span class="dz-file-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <polyline points="9 14 11 16 15 12"/>
+          </svg>
+        </span>
+        <span class="dz-file-name">${filename}</span>
+        <span class="dz-actions">
+          <button type="button" class="dz-action" aria-label="Preview" title="Preview">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button type="button" class="dz-action" aria-label="Download" title="Download">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button type="button" class="dz-action dz-remove" aria-label="Remove" title="Remove">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </span>
+      </div>
+    `;
+  }
+
+  function paintDropzone(dz, type) {
+    if (!dz || !currentDocUbo) return;
+    const isUp = uploaded[currentDocUbo][type];
+    if (isUp) {
+      dz.classList.add('uploaded');
+      dz.innerHTML = dzFileHTML(fakeFiles[type]);
+      dz.setAttribute('aria-label', fakeFiles[type] + ' uploaded');
+    } else {
+      dz.classList.remove('uploaded');
+      dz.innerHTML = dzPromptHTML();
+    }
+  }
+
+  function paintDocAction() {
+    if (!currentDocUbo) return;
+    const docAction = getDocAction();
+    if (!docAction) return;
+    const anyUp = uploaded[currentDocUbo].ine || uploaded[currentDocUbo].poa;
+    if (anyUp) {
+      docAction.textContent = 'Save';
+      docAction.classList.remove('btn-secondary');
+      docAction.classList.add('btn-primary');
+    } else {
+      docAction.textContent = 'Later';
+      docAction.classList.remove('btn-primary');
+      docAction.classList.add('btn-secondary');
+    }
+  }
+
+  function openDocSheet(uboId) {
+    currentDocUbo = uboId;
+    const name = DOC_NAMES[uboId] || 'UBO';
+    const ineTitle = document.getElementById('doc-ine-title');
+    const poaTitle = document.getElementById('doc-poa-title');
+    if (ineTitle) ineTitle.textContent = `Attach ${name}'s INE`;
+    if (poaTitle) poaTitle.textContent = `Attach ${name}'s Proof of address`;
+    paintDropzone(getDzIne(), 'ine');
+    paintDropzone(getDzPoa(), 'poa');
+    paintDocAction();
+
+    const ds = getDocSheet(), dscr = getDocScrim();
+    if (dscr) dscr.classList.add('open');
+    if (ds) {
+      ds.classList.add('open');
+      ds.setAttribute('aria-hidden', 'false');
+    }
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDocSheet() {
+    const ds = getDocSheet(), dscr = getDocScrim();
+    if (dscr) dscr.classList.remove('open');
+    if (ds) {
+      ds.classList.remove('open');
+      ds.setAttribute('aria-hidden', 'true');
+    }
+    document.body.style.overflow = '';
+  }
+  window.openDocSheet = openDocSheet;
+
+  // Click on dropzone toggles its uploaded state (prototype-only behavior)
+  function bindDropzone(dz, type) {
+    if (!dz) return;
+    dz.addEventListener('click', (e) => {
+      const removeBtn = e.target.closest('.dz-remove');
+      if (removeBtn) {
+        e.stopPropagation();
+        if (currentDocUbo) {
+          uploaded[currentDocUbo][type] = false;
+          paintDropzone(dz, type);
+          paintDocAction();
+          syncDocCardsFromState();
+          updateProgress();
+        }
+        return;
+      }
+      const otherAction = e.target.closest('.dz-action');
+      if (otherAction) { e.stopPropagation(); return; }
+      if (!currentDocUbo) return;
+      if (!uploaded[currentDocUbo][type]) {
+        uploaded[currentDocUbo][type] = true;
+        paintDropzone(dz, type);
+        paintDocAction();
+        syncDocCardsFromState();
+        updateProgress();
+      }
+    });
+  }
+
+  function initDocSheet() {
+    bindDropzone(getDzIne(), 'ine');
+    bindDropzone(getDzPoa(), 'poa');
+    const dscr = getDocScrim();
+    if (dscr) dscr.addEventListener('click', closeDocSheet);
+    const docCloseBtn = document.getElementById('doc-sheet-close');
+    if (docCloseBtn) docCloseBtn.addEventListener('click', closeDocSheet);
+    const docAction = getDocAction();
+    if (docAction) docAction.addEventListener('click', closeDocSheet);
+    document.addEventListener('keydown', (e) => {
+      const ds = getDocSheet();
+      if (e.key === 'Escape' && ds && ds.classList.contains('open')) closeDocSheet();
+    });
+  }
+  // Defer until DOM has parsed the doc-sheet markup further down the page.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDocSheet);
+  } else {
+    initDocSheet();
+  }
+
+  // Wire the per-card "Attach documents" buttons in Step 2 to open the sheet
+  document.querySelectorAll('.doc-card .doc-attach').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.doc-card');
+      if (!card) return;
+      openDocSheet(card.dataset.docUbo);
+    });
+  });
+
+  // Reflect per-UBO state into the small Step 2 cards (icon color + label + .attached class)
+  function syncDocCardsFromState() {
+    if (typeof syncCardsCheckedFromCheckbox === 'function') {
+      // run after this function via microtask so the .attached classes settle first
+      Promise.resolve().then(syncCardsCheckedFromCheckbox);
+    }
+    Object.keys(uploaded).forEach(uboId => {
+      const card = document.querySelector(`.doc-card[data-doc-ubo="${uboId}"]`);
+      if (!card) return;
+      ['ine', 'poa'].forEach(type => {
+        const row = card.querySelector(`.doc-row[data-doc="${type}"]`);
+        if (!row) return;
+        const label = row.querySelector('.doc-row-label');
+        const iconImg = row.querySelector('.doc-icon img');
+        const isUp = uploaded[uboId][type];
+        row.classList.toggle('attached', isUp);
+        if (iconImg) {
+          iconImg.src = isUp
+            ? 'Project assets/assets/icon-doc-attached.svg'
+            : 'Project assets/assets/icon-doc-missing.svg';
+        }
+        if (label) {
+          if (isUp) {
+            label.textContent = type === 'ine' ? 'INE attached' : 'Proof of address attached';
+          } else {
+            label.textContent = type === 'ine' ? 'Missing INE' : 'Missing Proof of address';
+          }
+        }
+      });
+    });
+  }
+
+  // Hide the bottom fade once user reaches the end of the scroll
+  const scroll = document.getElementById('scroll');
+  const fade   = document.querySelector('.scroll-fade');
+  function updateFade() {
+    const atBottom = scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 4;
+    fade.style.opacity = atBottom ? '0' : '1';
+    fade.style.transition = 'opacity 200ms';
+  }
+  scroll.addEventListener('scroll', updateFade);
+  window.addEventListener('resize', updateFade);
+  updateFade();
+
+  // ============ Side sheet (Edit UBO) — runs after DOM is ready ============
+  function initSheet() {
+    const UBOs = {
+      'ubo-1': {
+        type: 'mexican',
+        fullName: 'Alejandro Javier Ortega Ruiz',
+        birth: '22 April 1995',
+        gender: 'Male',
+        shareholding: '40',
+        pep: 'no',
+        rfc: 'OERA850412H90',
+        curp: 'OERA850412HDFRRN01',
+        profession: '',
+        city: 'Monterrey',
+        address: 'Calle Reforma 123, México, Monterrey, Nuevo León, Centro, 64000.'
+      },
+      'ubo-2': {
+        type: 'mexican',
+        fullName: 'Sofía Villagómez Luna',
+        birth: '18 January 1997',
+        gender: 'Female',
+        shareholding: '60',
+        pep: 'no',
+        rfc: 'VILM920825T67',
+        curp: 'VILM920825MDFLNR08',
+        profession: '',
+        city: 'Puebla',
+        address: 'Av. Paseo de la Reforma 284, 5B, Juárez, Cuauhtémoc, Ciudad de México, 06600.'
+      }
+    };
+
+    const scrim = document.getElementById('scrim');
+    const sheet = document.getElementById('sheet');
+    if (!scrim || !sheet) return;
+
+    let currentUboId = null;
+
+    function openSheet(uboId) {
+      const data = UBOs[uboId];
+      if (!data) return;
+      document.querySelector(`input[name="ubo-type"][value="${data.type}"]`).checked = true;
+      document.getElementById('f-name').value = data.fullName;
+      document.getElementById('f-birth').value = data.birth;
+      document.getElementById('f-gender').value = data.gender;
+      document.getElementById('f-share').value = data.shareholding;
+      document.querySelector(`input[name="pep"][value="${data.pep}"]`).checked = true;
+      document.getElementById('f-rfc').value = data.rfc;
+      document.getElementById('f-curp').value = data.curp;
+      const prof = document.getElementById('f-profession');
+      prof.value = data.profession;
+      const help = document.getElementById('f-profession-help');
+      if (data.profession) {
+        prof.classList.remove('placeholder-only');
+        help.style.display = 'none';
+      } else {
+        prof.classList.add('placeholder-only');
+        help.style.display = '';
+      }
+      document.getElementById('f-city').value = data.city;
+      document.getElementById('f-address').textContent = data.address;
+
+      scrim.classList.add('open');
+      sheet.classList.add('open');
+      sheet.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSheet() {
+      scrim.classList.remove('open');
+      sheet.classList.remove('open');
+      sheet.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.action-btn.edit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.card');
+        if (!card) return;
+        currentUboId = card.dataset.ubo;
+        openSheet(currentUboId);
+      });
+    });
+
+    // Helpers
+    function initials(name) {
+      const parts = name.trim().split(/\s+/);
+      const a = parts[0]?.[0] || '';
+      const b = parts[1]?.[0] || '';
+      return (a + b).toUpperCase();
+    }
+    function formatBirthShort(dateStr) {
+      if (!dateStr) return '';
+      const months = { january:'Jan', february:'Feb', march:'Mar', april:'Apr', may:'May', june:'Jun',
+                       july:'Jul', august:'Aug', september:'Sep', october:'Oct', november:'Nov', december:'Dec' };
+      const m = dateStr.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+      if (!m) return dateStr;
+      const month = months[m[2].toLowerCase()] || m[2].slice(0,3);
+      return `${m[1]} ${month} ${m[3]}`;
+    }
+    function truncateAddress(addr, max = 80) {
+      if (!addr) return '';
+      return addr.length > max ? addr.slice(0, max).replace(/[,\s]+$/, '') + '…' : addr;
+    }
+
+    function saveSheet() {
+      if (!currentUboId) return;
+      const card = document.querySelector(`.card[data-ubo="${currentUboId}"]`);
+      if (!card) return;
+
+      const data = {
+        type:         document.querySelector('input[name="ubo-type"]:checked')?.value || 'mexican',
+        fullName:     document.getElementById('f-name').value.trim(),
+        birth:        document.getElementById('f-birth').value.trim(),
+        gender:       document.getElementById('f-gender').value,
+        shareholding: document.getElementById('f-share').value.trim(),
+        pep:          document.querySelector('input[name="pep"]:checked')?.value || 'no',
+        rfc:          document.getElementById('f-rfc').value.trim(),
+        curp:         document.getElementById('f-curp').value.trim(),
+        profession:   document.getElementById('f-profession').value.trim(),
+        city:         document.getElementById('f-city').value.trim(),
+        address:      document.getElementById('f-address').textContent.trim(),
+      };
+
+      // Persist to model
+      Object.assign(UBOs[currentUboId], data);
+
+      // Write back to card DOM
+      if (data.fullName) {
+        card.querySelector('[data-field="name"]').textContent = data.fullName;
+        const av = card.querySelector('.avatar-initials');
+        if (av) av.textContent = initials(data.fullName);
+      } else {
+        // empty name: keep card readable but blank
+        const nm = card.querySelector('[data-field="name"]');
+        if (nm) nm.textContent = '—';
+        const av = card.querySelector('.avatar-initials');
+        if (av) av.textContent = '?';
+      }
+
+      const WARN_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+
+      // Generic per-row setter: renders <span class="value" …>val</span> when val is non-empty,
+      // otherwise renders the missing-info warn icon. Keeps the row's <span class="label"> intact.
+      const setField = (key, val) => {
+        const row = card.querySelector(`[data-field-row="${key}"]`);
+        if (!row) return;
+        // Strip any prior value/warn spans
+        row.querySelectorAll(':scope > .value, :scope > .warn').forEach(n => n.remove());
+        if (val !== undefined && val !== null && String(val).trim() !== '') {
+          const span = document.createElement('span');
+          span.className = 'value';
+          span.setAttribute('data-field', key);
+          span.textContent = val;
+          row.appendChild(span);
+        } else {
+          const warn = document.createElement('span');
+          warn.className = 'warn';
+          warn.title = 'Required field is empty';
+          warn.innerHTML = WARN_SVG;
+          row.appendChild(warn);
+        }
+      };
+
+      setField('nationality', data.type === 'foreign' ? 'Foreign' : 'Mexican');
+      setField('profession',  data.profession);
+      setField('rfc',         data.rfc);
+      setField('birth',       data.birth ? formatBirthShort(data.birth) : '');
+      setField('curp',        data.curp);
+      setField('gender',      data.gender);
+      setField('address',     data.address ? truncateAddress(data.address) : '');
+      setField('city',        data.city);
+
+      // Shareholding lives inside the .sub line, not a .field row — handle inline.
+      const shareEl = card.querySelector('[data-field="shareholding"]');
+      if (shareEl) {
+        if (data.shareholding) {
+          shareEl.textContent = data.shareholding + '%';
+          shareEl.classList.remove('warn-inline');
+        } else {
+          shareEl.textContent = '—';
+        }
+      }
+
+      // PEP chip + info tooltip
+      const chip = card.querySelector('.chip');
+      const infoIcon = card.querySelector('.name-row .info-icon');
+      if (chip) chip.textContent = data.pep === 'yes' ? 'PEP' : 'No PEP';
+      if (infoIcon) {
+        infoIcon.title = data.pep === 'yes'
+          ? 'PEP — Politically Exposed Person'
+          : 'No PEP — Not a Politically Exposed Person';
+      }
+
+      // Recompute global progress
+      if (typeof window.updateProgress === 'function') window.updateProgress();
+
+      // Re-evaluar estado de la card editada
+      const isConfirmed = !!(document.getElementById('confirm-check')
+        && document.getElementById('confirm-check').checked);
+      if (isConfirmed) {
+        const editedCard = document.querySelector(`.card[data-ubo="${currentUboId}"]`);
+        if (editedCard) {
+          const avatar = editedCard.querySelector('.avatar');
+          const caption = editedCard.querySelector('.id .missing-caption');
+          const missingFields = editedCard.querySelectorAll('.field .warn').length;
+          if (missingFields > 0) {
+            editedCard.classList.remove('checked');
+            editedCard.classList.add('has-missing');
+            if (avatar) avatar.classList.add('has-missing');
+            if (caption) caption.textContent = missingFields === 1
+              ? 'Missing 1 field'
+              : `Missing ${missingFields} fields`;
+          } else {
+            editedCard.classList.add('checked');
+            editedCard.classList.remove('has-missing');
+            if (avatar) avatar.classList.remove('has-missing');
+            if (caption) caption.textContent = '';
+          }
+        }
+      }
+
+      closeSheet();
+    }
+
+    document.getElementById('sheet-continue').addEventListener('click', saveSheet);
+    scrim.addEventListener('click', closeSheet);
+    document.getElementById('sheet-close').addEventListener('click', closeSheet);
+    document.getElementById('sheet-cancel').addEventListener('click', closeSheet);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sheet.classList.contains('open')) closeSheet();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSheet);
+  } else {
+    initSheet();
+  }
+</script>
+<!-- ====================== Edit UBO side sheet ====================== -->
+<div class="scrim" id="scrim" aria-hidden="true"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true">
+  <header class="sheet-header">
+    <h2 class="sheet-title" id="sheet-title">Edit UBO</h2>
+    <button class="sheet-close" id="sheet-close" type="button" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="sheet-body">
+
+    <div class="callout">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 14.5C6.71442 14.5 5.45772 14.1188 4.3888 13.4046C3.31988 12.6903 2.48676 11.6752 1.99479 10.4874C1.50282 9.29972 1.37409 7.99279 1.6249 6.73191C1.8757 5.47104 2.49477 4.31285 3.40381 3.40381C4.31285 2.49476 5.47104 1.8757 6.73192 1.6249C7.99279 1.37409 9.29973 1.50281 10.4874 1.99478C11.6752 2.48675 12.6903 3.31987 13.4046 4.38879C14.1188 5.45771 14.5 6.71442 14.5 8C14.4982 9.72335 13.8128 11.3756 12.5942 12.5942C11.3756 13.8128 9.72335 14.4982 8 14.5ZM8 2.5C6.91221 2.5 5.84884 2.82257 4.94437 3.42692C4.0399 4.03126 3.33495 4.89025 2.91867 5.89524C2.50238 6.90023 2.39347 8.0061 2.60568 9.073C2.8179 10.1399 3.34173 11.1199 4.11092 11.8891C4.8801 12.6583 5.86011 13.1821 6.92701 13.3943C7.9939 13.6065 9.09977 13.4976 10.1048 13.0813C11.1098 12.6651 11.9687 11.9601 12.5731 11.0556C13.1774 10.1512 13.5 9.0878 13.5 8C13.4983 6.54182 12.9184 5.14383 11.8873 4.11274C10.8562 3.08165 9.45819 2.50165 8 2.5ZM7.5 7.5V11C7.5 11.1326 7.55268 11.2598 7.64645 11.3536C7.74022 11.4473 7.86739 11.5 8 11.5C8.13261 11.5 8.25979 11.4473 8.35356 11.3536C8.44732 11.2598 8.5 11.1326 8.5 11V7.5C8.5 7.36739 8.44732 7.24021 8.35356 7.14645C8.25979 7.05268 8.13261 7 8 7C7.86739 7 7.74022 7.05268 7.64645 7.14645C7.55268 7.24021 7.5 7.36739 7.5 7.5ZM8.75 5.25C8.75 5.10166 8.70602 4.95666 8.6236 4.83332C8.54119 4.70999 8.42406 4.61386 8.28701 4.55709C8.14997 4.50033 7.99917 4.48547 7.85368 4.51441C7.7082 4.54335 7.57456 4.61478 7.46967 4.71967C7.36478 4.82456 7.29335 4.9582 7.26441 5.10368C7.23547 5.24917 7.25033 5.39997 7.30709 5.53701C7.36386 5.67406 7.45999 5.79119 7.58333 5.8736C7.70666 5.95601 7.85167 6 8 6C8.19892 6 8.38968 5.92098 8.53033 5.78033C8.67098 5.63968 8.75 5.44891 8.75 5.25Z" fill="currentColor"></path>
+      </svg>
+      <p><strong>Only Full name is mandatory.</strong> Precise details speed up your Clara request review.</p>
+    </div>
+
+    <h3 class="sheet-section-title">Select UBO type</h3>
+    <div class="radio-row">
+      <label class="radio">
+        <input type="radio" name="ubo-type" value="mexican" checked />
+        <span class="dot"></span>
+        <span>Mexican</span>
+      </label>
+      <label class="radio">
+        <input type="radio" name="ubo-type" value="foreign" />
+        <span class="dot"></span>
+        <span>Foreign</span>
+      </label>
+    </div>
+
+    <div class="field-row">
+      <div class="input-wrap">
+        <label class="field-label" for="f-name">Full name</label>
+        <input class="input" id="f-name" type="text" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="input-wrap">
+        <label class="field-label" for="f-birth">Birth date</label>
+        <input class="input" id="f-birth" type="text" />
+        <span class="input-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <div class="field-row cols-2">
+      <div class="input-wrap">
+        <label class="field-label" for="f-gender">Gender</label>
+        <select class="select" id="f-gender">
+          <option>Male</option>
+          <option>Female</option>
+          <option>Non-binary</option>
+          <option>Prefer not to say</option>
+        </select>
+        <span class="input-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </div>
+      <div>
+        <div class="input-wrap">
+          <label class="field-label" for="f-share">Shareholding</label>
+          <input class="input" id="f-share" type="text" />
+          <span class="input-icon" style="font-size:14px;color:var(--fg-low);font-weight:500;">%</span>
+        </div>
+        <p class="helper">It's usually more than 25%</p>
+      </div>
+    </div>
+
+    <div class="pep-row">
+      <div class="label-with-info">
+        <span>Politically Exposed Person (PEP)?</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 14.5C6.71442 14.5 5.45772 14.1188 4.3888 13.4046C3.31988 12.6903 2.48676 11.6752 1.99479 10.4874C1.50282 9.29972 1.37409 7.99279 1.6249 6.73191C1.8757 5.47104 2.49477 4.31285 3.40381 3.40381C4.31285 2.49476 5.47104 1.8757 6.73192 1.6249C7.99279 1.37409 9.29973 1.50281 10.4874 1.99478C11.6752 2.48675 12.6903 3.31987 13.4046 4.38879C14.1188 5.45771 14.5 6.71442 14.5 8C14.4982 9.72335 13.8128 11.3756 12.5942 12.5942C11.3756 13.8128 9.72335 14.4982 8 14.5ZM8 2.5C6.91221 2.5 5.84884 2.82257 4.94437 3.42692C4.0399 4.03126 3.33495 4.89025 2.91867 5.89524C2.50238 6.90023 2.39347 8.0061 2.60568 9.073C2.8179 10.1399 3.34173 11.1199 4.11092 11.8891C4.8801 12.6583 5.86011 13.1821 6.92701 13.3943C7.9939 13.6065 9.09977 13.4976 10.1048 13.0813C11.1098 12.6651 11.9687 11.9601 12.5731 11.0556C13.1774 10.1512 13.5 9.0878 13.5 8C13.4983 6.54182 12.9184 5.14383 11.8873 4.11274C10.8562 3.08165 9.45819 2.50165 8 2.5ZM7.5 7.5V11C7.5 11.1326 7.55268 11.2598 7.64645 11.3536C7.74022 11.4473 7.86739 11.5 8 11.5C8.13261 11.5 8.25979 11.4473 8.35356 11.3536C8.44732 11.2598 8.5 11.1326 8.5 11V7.5C8.5 7.36739 8.44732 7.24021 8.35356 7.14645C8.25979 7.05268 8.13261 7 8 7C7.86739 7 7.74022 7.05268 7.64645 7.14645C7.55268 7.24021 7.5 7.36739 7.5 7.5ZM8.75 5.25C8.75 5.10166 8.70602 4.95666 8.6236 4.83332C8.54119 4.70999 8.42406 4.61386 8.28701 4.55709C8.14997 4.50033 7.99917 4.48547 7.85368 4.51441C7.7082 4.54335 7.57456 4.61478 7.46967 4.71967C7.36478 4.82456 7.29335 4.9582 7.26441 5.10368C7.23547 5.24917 7.25033 5.39997 7.30709 5.53701C7.36386 5.67406 7.45999 5.79119 7.58333 5.8736C7.70666 5.95601 7.85167 6 8 6C8.19892 6 8.38968 5.92098 8.53033 5.78033C8.67098 5.63968 8.75 5.44891 8.75 5.25Z" fill="currentColor"></path>
+        </svg>
+      </div>
+      <div class="radio-row">
+        <label class="radio">
+          <input type="radio" name="pep" value="yes" />
+          <span class="dot"></span>
+          <span>Yes</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="pep" value="no" checked />
+          <span class="dot"></span>
+          <span>No</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field-row cols-2">
+      <div class="input-wrap">
+        <label class="field-label" for="f-rfc">RFC</label>
+        <input class="input" id="f-rfc" type="text" />
+      </div>
+      <div class="input-wrap">
+        <label class="field-label" for="f-curp">CURP</label>
+        <input class="input" id="f-curp" type="text" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div>
+        <div class="input-wrap">
+          <input class="input placeholder-only" id="f-profession" type="text" placeholder="Profession" />
+        </div>
+        <p class="helper error" id="f-profession-help">Missing information</p>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="input-wrap">
+        <label class="field-label" for="f-city">City of birth</label>
+        <input class="input" id="f-city" type="text" />
+      </div>
+    </div>
+
+    <div class="address-block">
+      <div class="address-row">
+        <span class="label">Address:</span>
+        <button class="change-address" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          <span>Change address</span>
+        </button>
+      </div>
+      <p class="address-text" id="f-address"></p>
+    </div>
+
+  </div>
+
+  <footer class="sheet-footer">
+    <div class="actions">
+      <button class="btn btn-secondary" type="button" id="sheet-cancel">Cancel</button>
+      <button class="btn btn-primary" type="button" id="sheet-continue">Save</button>
+    </div>
+  </footer>
+</aside>
+
+<!-- ====================== UBO documentation side sheet ====================== -->
+<div class="scrim" id="doc-scrim" aria-hidden="true"></div>
+<aside class="sheet" id="doc-sheet" role="dialog" aria-modal="true" aria-labelledby="doc-sheet-title" aria-hidden="true">
+  <header class="sheet-header">
+    <h2 class="sheet-title" id="doc-sheet-title">UBO documentation</h2>
+    <button class="sheet-close" id="doc-sheet-close" type="button" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="sheet-body">
+    <p class="page-subtitle" style="margin-top:-8px;">
+      Provide this documents to expedite your Clara request and unlock better credit offers.
+    </p>
+
+    <div class="doc-section">
+      <h3 class="doc-section-title" id="doc-ine-title">Attach Alejandro's INE</h3>
+      <div class="dropzone" id="dropzone-ine" data-doc="ine" tabindex="0" role="button" aria-label="Upload INE file">
+        <div class="dropzone-prompt">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span><span class="dz-link">Choose one file</span> or drag and drop here</span>
+        </div>
+      </div>
+      <p class="dropzone-meta">Supported formats: .pdf, .jpg, .xml and .png<br/>Maximum file size: 50 MB.</p>
+    </div>
+
+    <div class="doc-section">
+      <h3 class="doc-section-title" id="doc-poa-title">Attach Alejandro's Proof of address</h3>
+      <p class="doc-section-desc">Submit a recent utility bill (CFE, water, phone) or bank statement under 3 months old, or a current lease as proof of address.</p>
+      <div class="dropzone" id="dropzone-poa" data-doc="poa" tabindex="0" role="button" aria-label="Upload Proof of address file">
+        <div class="dropzone-prompt">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span><span class="dz-link">Choose one file</span> or drag and drop here</span>
+        </div>
+      </div>
+      <p class="dropzone-meta">Supported formats: .pdf, .jpg, .xml and .png<br/>Maximum file size: 50 MB.</p>
+    </div>
+  </div>
+
+  <footer class="sheet-footer">
+    <div class="actions" style="grid-template-columns: 1fr;">
+      <button class="btn btn-secondary" type="button" id="doc-sheet-action">Later</button>
+    </div>
+  </footer>
+</aside>
+
+<!-- ====================== Tweaks panel ====================== -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<div id="tweaks-root"></div>
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "theme": "clara",
+    "density": "compact",
+    "cardStyle": "bordered"
+  }/*EDITMODE-END*/;
+
+  function Tweaks() {
+    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+    React.useEffect(() => {
+      document.body.setAttribute('data-theme', t.theme);
+      document.body.setAttribute('data-density', t.density);
+      document.body.setAttribute('data-card-style', t.cardStyle);
+    }, [t.theme, t.density, t.cardStyle]);
+
+    return (
+      <TweaksPanel>
+        <TweakSection label="Theme" />
+        <TweakRadio
+          label="Palette"
+          value={t.theme}
+          options={[
+            { value: 'clara',  label: 'Clara' },
+            { value: 'aurora', label: 'Aurora' },
+            { value: 'bold',   label: 'Bold' },
+          ]}
+          onChange={(v) => setTweak('theme', v)}
+        />
+
+        <TweakSection label="Layout" />
+        <TweakRadio
+          label="Density"
+          value={t.density}
+          options={[
+            { value: 'compact', label: 'Compact' },
+            { value: 'regular', label: 'Regular' },
+            { value: 'cozy',    label: 'Cozy' },
+          ]}
+          onChange={(v) => setTweak('density', v)}
+        />
+
+        <TweakSection label="Cards" />
+        <TweakRadio
+          label="Style"
+          value={t.cardStyle}
+          options={[
+            { value: 'bordered', label: 'Bordered' },
+            { value: 'tinted',   label: 'Tinted' },
+            { value: 'elevated', label: 'Elevated' },
+          ]}
+          onChange={(v) => setTweak('cardStyle', v)}
+        />
+      </TweaksPanel>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<Tweaks />);
+</script>
+
+</body>
+</html>
